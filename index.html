@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Charting Ariana Grande's success</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="twitter:site" content="@mandicai">
+    <meta name="twitter:title" content="">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Rozha+One" rel="stylesheet">
+    <link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+    <div class="container">
+        <div id="background-image"></div>
+        <div id="login">
+            <h1>The Progression of Ariana Grande</h1>
+            <button id="login-button" class="btn btn-primary">Log in with Spotify</button>
+        </div>
+        <div id="loggedin">
+            <h3>Her song <span id="property">tempo</span> over the years ...</h3>
+            <select>
+                <option>Tempo</option>
+                <option>Popularity</option>
+                <option>Duration</option>
+                <option>Energy</option>
+                <option>Acousticness</option>
+                <option>Liveness</option>
+                <option>Loudness</option>
+            </select>
+            <div id="tempo-chart"></div>
+        </div>
+    </div>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="assets/spotify-web-api-wrapper.js"></script>
+    <script src="//unpkg.com/cross-fetch/dist/cross-fetch.js"></script>
+    <script src="assets/d3.v5.min.js"></script>
+    <script src="index.js"></script>
+    <script src="authorization.js"></script>
+</body>
+
+</html>

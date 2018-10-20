@@ -1,0 +1,52 @@
+#login,
+#loggedin {
+    /* display: none; */
+}
+
+#login {
+    text-align: center;
+}
+
+body {
+    font-family: 'Rozha One', serif;
+}
+
+#login-button {
+    background-color: #fff;
+    background-image: linear-gradient(to right, #324276, #6746a4, #b84ba7, #ed6176, #f0964b);
+    border: none;
+}
+
+#song-line-chart {
+    width: 100%;
+    height: 75%;
+}
+
+#property {
+    text-decoration: underline;
+    text-decoration-color: #ed6176;
+}
+
+.x-axis, .y-axis {
+    font-family: 'Rozha One', serif;
+}
+
+.x-axis .domain, .y-axis .domain {
+    color: #cccfff;
+}
+
+.y-axis .tick line {
+    display: none;
+}
+
+
+.album-text {
+    font-size: 9px;
+}
+
+.text-overflow {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 500px;
+}
