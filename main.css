@@ -1,14 +1,18 @@
+body {
+    font-family: 'Rozha One', serif;
+}
+
 #login,
 #loggedin {
-    /* display: none; */
+    display: none;
 }
 
 #login {
+    position: absolute;
+    top: 25%;
+    left: 25%;
+    right: 25%;
     text-align: center;
-}
-
-body {
-    font-family: 'Rozha One', serif;
 }
 
 #login-button {
