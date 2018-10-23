@@ -93,7 +93,6 @@ if (access_token && (state == null || state !== storedState)) {
                     })
                     .then(trackInfo => {
                         Promise.all(trackInfo).then(info => {
-
                             let width = 500,
                                 height = 300,
                                 margin = {
@@ -107,7 +106,7 @@ if (access_token && (state == null || state !== storedState)) {
                                 .attr('viewBox', '0 0' + ' ' + width + ' ' + height)
 
                             let y = d3.scaleTime()
-                                .domain(d3.extent(info.flat(), d => d.releaseDate)).nice()
+                                .domain(d3.extent(flatten(info), d => d.releaseDate)).nice()
                                 .range([height - margin.bottom, margin.top])
 
                             let yAxis = g => g
@@ -123,7 +122,7 @@ if (access_token && (state == null || state !== storedState)) {
                                 .call(yAxis)
 
                             let x = d3.scaleLinear()
-                                .domain(d3.extent(info.flat(), d => d.tempo)).nice()
+                                .domain(d3.extent(flatten(info), d => d.tempo)).nice()
                                 .range([margin.left, width - margin.right])
 
                             let xAxis = g => g
@@ -180,12 +179,12 @@ if (access_token && (state == null || state !== storedState)) {
                                     return y(d.releaseDate)
                                 })
                                 .attr('class', 'album-text')
-                            
+
                             let radialHeight = 1100
 
                             let radialSVG = d3.select('#song-radial-chart').append('svg')
                                 .attr('viewBox', '0 0' + ' ' + width + ' ' + radialHeight)
-                            
+
                             let outerRadius = 100,
                                 fullCircle = 2 * Math.pi
                                 section = 1 / 2
@@ -204,12 +203,12 @@ if (access_token && (state == null || state !== storedState)) {
                                     .attr("transform", "translate(" + width / 2 + "," + chartY + ")")
                                     .attr('fill', 'none')
                                     .attr('stroke', 'gray')
-                                
+
                                 let radialMidCircle = radialSVG.append('circle').attr('r', 50)
                                     .attr("transform", "translate(" + width / 2 + "," + chartY + ")")
                                     .attr('fill', 'none')
                                     .attr('stroke', 'gray')
-                            
+
                                 let radialInnerCircle = radialSVG.append('circle').attr('r', 1)
                                     .attr("transform", "translate(" + width / 2 + "," + chartY + ")")
                                     .attr('fill', 'none')
@@ -260,4 +259,8 @@ if (access_token && (state == null || state !== storedState)) {
             url += '&state=' + encodeURIComponent(state)
             window.location = url
         })
+}
+
+function flatten(array) {
+  return array.reduce((acc, val) => acc.concat(val), [])
 }
