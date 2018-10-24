@@ -26,10 +26,10 @@ body {
   display: none;
   position: absolute;
   z-index: 2;
-  width: 12%;
-  min-height: 50px;
-  padding: 10px;
-  font-size: 12px;
+  min-width: 30px;
+  min-height: 30px;
+  padding: 5px;
+  font-size: 100%;
   background: #fff;
   pointer-events: none;
   box-shadow: 0 3px 6px rgba(0, 0, 0, .16);

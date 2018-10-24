@@ -155,10 +155,8 @@ if (access_token && (state == null || state !== storedState)) {
                                     .enter().append('circle')
                                     .on('mousemove', d => {
                                       d3.select('#tooltip').style('display', 'initial')
-                                      d3.select('#tooltip').html('<div class="song-name">' + d.name + '</div>' +
-                                        '<div>' + d.album + '</div>' +
-                                        '<div>' + 'hi' + '</div>')
-                                        .style('left', (d3.event.pageX) + 'px').style('top', (d3.event.pageY) + 'px')
+                                      d3.select('#tooltip').html('<div class="song-name">' + d.name + '</div>')
+                                        .style('left', (d3.event.pageX + 10) + 'px').style('top', (d3.event.pageY) + 'px')
                                     })
                                     .on('mouseout', function (d) {
                                       d3.select('#tooltip').style('display', 'none')
