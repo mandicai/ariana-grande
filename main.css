@@ -46,6 +46,11 @@ body {
     text-decoration-color: #ed6176;
 }
 
+.bubbles {
+    stroke: gray;
+    opacity: 0.5;
+}
+
 .x-axis, .y-axis {
     font-family: 'Rozha One', serif;
 }
