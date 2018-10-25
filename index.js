@@ -1,51 +1,53 @@
-let stateKey = 'spotify_auth_state'
-/**
- * Obtains parameters from the hash of the URL
- * @return Object
- */
-function getHashParams() {
-    let hashParams = {}
-    let e, r = /([^&;=]+)=?([^&;]*)/g,
-        q = window.location.hash.substring(1)
-    while (e = r.exec(q)) {
-        hashParams[e[1]] = decodeURIComponent(e[2])
-    }
-    return hashParams
-}
-/**
- * Generates a random string containing numbers and letters
- * @param  {number} length The length of the string
- * @return {string} The generated string
- */
-function generateRandomString(length) {
-    let text = ''
-    let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-    for (let i = 0; i < length; i++) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length))
-    }
-    return text
-}
+//  COMMENT OUT THIS
+// let stateKey = 'spotify_auth_state'
+// /**
+//  * Obtains parameters from the hash of the URL
+//  * @return Object
+//  */
+// function getHashParams() {
+//     let hashParams = {}
+//     let e, r = /([^&;=]+)=?([^&;]*)/g,
+//         q = window.location.hash.substring(1)
+//     while (e = r.exec(q)) {
+//         hashParams[e[1]] = decodeURIComponent(e[2])
+//     }
+//     return hashParams
+// }
+// /**
+//  * Generates a random string containing numbers and letters
+//  * @param  {number} length The length of the string
+//  * @return {string} The generated string
+//  */
+// function generateRandomString(length) {
+//     let text = ''
+//     let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+//     for (let i = 0; i < length; i++) {
+//         text += possible.charAt(Math.floor(Math.random() * possible.length))
+//     }
+//     return text
+// }
 
-let userProfilePlaceholder = document.getElementById('show_access_token')
+// let userProfilePlaceholder = document.getElementById('show_access_token')
 
-let params = getHashParams()
-let access_token = params.access_token,
-    state = params.state,
-    storedState = localStorage.getItem(stateKey)
+// let params = getHashParams()
+// let access_token = params.access_token,
+//     state = params.state,
+//     storedState = localStorage.getItem(stateKey)
 
-if (access_token && (state == null || state !== storedState)) {
-    alert('There was an error during authentication, or you need to log in again!')
-} else {
-    localStorage.removeItem(stateKey)
-    if (access_token) {
-        $.ajax({
-            url: 'https://api.spotify.com/v1/me',
-            headers: {
-                'Authorization': 'Bearer ' + access_token
-            },
-            success: function (response) {
+// if (access_token && (state == null || state !== storedState)) {
+//     alert('There was an error during authentication, or you need to log in again!')
+// } else {
+//     localStorage.removeItem(stateKey)
+//     if (access_token) {
+//         $.ajax({
+//             url: 'https://api.spotify.com/v1/me',
+//             headers: {
+//                 'Authorization': 'Bearer ' + access_token
+//             },
+//             success: function (response) {
+                //  COMMENT OUT THIS
                 let spotifyApi = new SpotifyWebApi()
-                spotifyApi.setAccessToken(access_token)
+                spotifyApi.setAccessToken('BQBg3eA889Jgai-9VzBMH2fCGWvkaWxfQ-5aqrHgLip6aXUnLFKjNFbAokNpoEoXtRAzBegvgRsoOqTKGDwWpkNY_6-No6R36ZTDA8FRamSd_429bk207m4HC-bmRK9sRwB9M2lr6ySh43sE1UahN5GYPdTCMezl')
 
                 // search tracks whose artist's name contains 'Love'
                 spotifyApi.getAlbums(['3tx8gQqWbGwqIGZHqDNrGe', '3OZgEywV4krCZ814pTJWr7', '6EVYTRG1drKdO8OnIQBeEj', '6czdbbMtGbAkZ6ud2OMTcg'], {
@@ -122,7 +124,6 @@ if (access_token && (state == null || state !== storedState)) {
                                 .call(yAxis)
 
                             let x = d3.scaleLinear()
-                                .domain(d3.extent(flatten(info), d => d.tempo)).nice()
                                 .range([margin.left, width - margin.right])
 
                             let xAxis = g => g
@@ -136,43 +137,54 @@ if (access_token && (state == null || state !== storedState)) {
                                     .attr('text-anchor', 'end'))
                                 .attr('class', 'x-axis')
 
-                            svg.append('g')
+                            let xAxisGroup = svg.append('g')
                                 .call(xAxis)
 
                             let colorScale = d3.scaleSequential(d3.interpolateWarm).domain([0, 4])
 
                             let g = svg.append('g').attr('class', 'bubbles')
 
-                            info.forEach((songInfo, index) => {
-                                let bubbles = g.data([{
+                            let render = () => {
+                                // RESET THE DOMAIN OF THE X AXIS AND RECALL
+                                x.domain(d3.extent(flatten(info), d => d[yColumn])).nice()
+                                xAxisGroup.call(xAxis)
+
+                                info.forEach((songInfo, index) => {
+                                    let bubbles = g.data([{
                                         album: songInfo[0].album,
                                         releaseDate: songInfo[0].releaseDate
                                     }])
-                                    .append('g')
-                                    .attr('class', 'bubbleGroup ' + songInfo[0].album)
-                                    .selectAll('.bubble')
-                                    .data(songInfo)
-                                    .enter().append('circle')
-                                    .on('mousemove', d => {
-                                      d3.select('#tooltip').style('display', 'initial')
-                                      d3.select('#tooltip').html('<div class="song-name">' + d.name + '</div>')
-                                        .style('left', (d3.event.pageX + 10) + 'px').style('top', (d3.event.pageY) + 'px')
-                                    })
-                                    .on('mouseout', function (d) {
-                                      d3.select('#tooltip').style('display', 'none')
-                                    })
+                                        .append('g')
+                                        .attr('class', 'bubbleGroup ' + songInfo[0].album)
+                                        .selectAll('.bubble')
+                                        .data(songInfo)
+                                        .enter().append('circle')
+                                        .on('mousemove', d => {
+                                            d3.select('#tooltip').style('display', 'initial')
+                                            d3.select('#tooltip').html('<div class="song-name">' + d.name + '</div>')
+                                                .style('left', (d3.event.pageX + 10) + 'px').style('top', (d3.event.pageY) + 'px')
+                                        })
+                                        .on('mouseout', function (d) {
+                                            d3.select('#tooltip').style('display', 'none')
+                                        })
 
-                                bubbles.merge(g)
-                                    .attr('r', 5)
-                                    .attr('opacity', 0.5)
-                                    .attr('cx', d => x(d.tempo))
-                                    .transition().duration(750)
-                                    .attr('cy', d => y(d.releaseDate))
-                                    .attr('fill', colorScale(index))
-                                    .attr('stroke', 'gray')
-                                    .transition().duration(750)
-                                    .attr('opacity', 1)
-                            })
+                                    bubbles.merge(g)
+                                        .attr('r', 5)
+                                        .attr('opacity', 0.5)
+                                        .attr('cx', d => x(d[yColumn]))
+                                        .transition().duration(750)
+                                        .attr('cy', d => y(d.releaseDate))
+                                        .attr('fill', colorScale(index))
+                                        .attr('stroke', 'gray')
+                                        .transition().duration(750)
+                                        .attr('opacity', 1)
+                                })
+                            }
+
+                            let columns = ['acousticness', 'danceability', 'energy', 'valence']
+                            let yColumn = columns[0]
+
+                            render()
 
                             d3.selectAll('.bubbleGroup')
                                 .append('text')
@@ -184,6 +196,40 @@ if (access_token && (state == null || state !== storedState)) {
                                     return y(d.releaseDate)
                                 })
                                 .attr('class', 'album-text')
+                            
+                            // DROPDOWN MENU HANDLING
+                            let onYColumnClicked = column => {
+                                yColumn = column
+                                render()
+                            }
+
+                            let dropdownMenu = (selection, props) => {
+                                let {
+                                    options,
+                                    onOptionClicked,
+                                    selectedOption
+                                } = props
+
+                                let select = selection.selectAll('select').data([null])
+                                select = select.enter().append('select')
+                                    .merge(select)
+                                    .on('change', function () {
+                                        onOptionClicked(this.value)
+                                    })
+
+                                let option = select.selectAll('option').data(options)
+                                option.enter().append('option')
+                                    .merge(option)
+                                    .attr('value', d => d)
+                                    .property('selected', d => d === selectedOption) // why is this here?
+                                    .text(d => d)
+                            }
+
+                            d3.select("#y-menu").call(dropdownMenu, {
+                                options: columns,
+                                onOptionClicked: onYColumnClicked,
+                                selectedOption: yColumn
+                            })
 
                             let radialHeight = 1100
 
@@ -242,29 +288,31 @@ if (access_token && (state == null || state !== storedState)) {
                     })
                 $('#login').hide()
                 $('#loggedin').show()
-            }
-        })
-    } else {
-        $('#login').show()
-        $('#loggedin').hide()
-    }
+    //  COMMENT OUT THIS
+    //         }
+    //     })
+    // } else {
+    //     $('#login').show()
+    //     $('#loggedin').hide()
+    // }
 
-    d3.select('#login-button')
-        .on('click', function (d) {
-            let client_id = '59b8b201c88f468fa70b18adb98097e8' // Your client id
-            let redirect_uri = 'http://localhost:8000' // Your redirect uri
-            let state = generateRandomString(16)
-            localStorage.setItem(stateKey, state)
-            let scope = 'user-read-private user-read-email'
-            let url = 'https://accounts.spotify.com/authorize'
-            url += '?response_type=token'
-            url += '&client_id=' + encodeURIComponent(client_id)
-            url += '&scope=' + encodeURIComponent(scope)
-            url += '&redirect_uri=' + encodeURIComponent(redirect_uri)
-            url += '&state=' + encodeURIComponent(state)
-            window.location = url
-        })
-}
+    // d3.select('#login-button')
+    //     .on('click', function (d) {
+    //         let client_id = '59b8b201c88f468fa70b18adb98097e8' // Your client id
+    //         let redirect_uri = 'http://localhost:8000' // Your redirect uri
+    //         let state = generateRandomString(16)
+    //         localStorage.setItem(stateKey, state)
+    //         let scope = 'user-read-private user-read-email'
+    //         let url = 'https://accounts.spotify.com/authorize'
+    //         url += '?response_type=token'
+    //         url += '&client_id=' + encodeURIComponent(client_id)
+    //         url += '&scope=' + encodeURIComponent(scope)
+    //         url += '&redirect_uri=' + encodeURIComponent(redirect_uri)
+    //         url += '&state=' + encodeURIComponent(state)
+    //         window.location = url
+    //     })
+// }
+//  COMMENT OUT THIS
 
 function flatten(array) {
   return array.reduce((acc, val) => acc.concat(val), [])
