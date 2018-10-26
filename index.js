@@ -1,53 +1,53 @@
 //  COMMENT OUT THIS
-// let stateKey = 'spotify_auth_state'
-// /**
-//  * Obtains parameters from the hash of the URL
-//  * @return Object
-//  */
-// function getHashParams() {
-//     let hashParams = {}
-//     let e, r = /([^&;=]+)=?([^&;]*)/g,
-//         q = window.location.hash.substring(1)
-//     while (e = r.exec(q)) {
-//         hashParams[e[1]] = decodeURIComponent(e[2])
-//     }
-//     return hashParams
-// }
-// /**
-//  * Generates a random string containing numbers and letters
-//  * @param  {number} length The length of the string
-//  * @return {string} The generated string
-//  */
-// function generateRandomString(length) {
-//     let text = ''
-//     let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-//     for (let i = 0; i < length; i++) {
-//         text += possible.charAt(Math.floor(Math.random() * possible.length))
-//     }
-//     return text
-// }
+let stateKey = 'spotify_auth_state'
+/**
+ * Obtains parameters from the hash of the URL
+ * @return Object
+ */
+function getHashParams() {
+    let hashParams = {}
+    let e, r = /([^&;=]+)=?([^&;]*)/g,
+        q = window.location.hash.substring(1)
+    while (e = r.exec(q)) {
+        hashParams[e[1]] = decodeURIComponent(e[2])
+    }
+    return hashParams
+}
+/**
+ * Generates a random string containing numbers and letters
+ * @param  {number} length The length of the string
+ * @return {string} The generated string
+ */
+function generateRandomString(length) {
+    let text = ''
+    let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    for (let i = 0; i < length; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length))
+    }
+    return text
+}
 
-// let userProfilePlaceholder = document.getElementById('show_access_token')
+let userProfilePlaceholder = document.getElementById('show_access_token')
 
-// let params = getHashParams()
-// let access_token = params.access_token,
-//     state = params.state,
-//     storedState = localStorage.getItem(stateKey)
+let params = getHashParams()
+let access_token = params.access_token,
+    state = params.state,
+    storedState = localStorage.getItem(stateKey)
 
-// if (access_token && (state == null || state !== storedState)) {
-//     alert('There was an error during authentication, or you need to log in again!')
-// } else {
-//     localStorage.removeItem(stateKey)
-//     if (access_token) {
-//         $.ajax({
-//             url: 'https://api.spotify.com/v1/me',
-//             headers: {
-//                 'Authorization': 'Bearer ' + access_token
-//             },
-//             success: function (response) {
+if (access_token && (state == null || state !== storedState)) {
+    alert('There was an error during authentication, or you need to log in again!')
+} else {
+    localStorage.removeItem(stateKey)
+    if (access_token) {
+        $.ajax({
+            url: 'https://api.spotify.com/v1/me',
+            headers: {
+                'Authorization': 'Bearer ' + access_token
+            },
+            success: function (response) {
                 //  COMMENT OUT THIS
                 let spotifyApi = new SpotifyWebApi()
-                spotifyApi.setAccessToken('BQB2yDqeUTB-gm2gkClzTl-IQOFCfnJC4I0hWaJ3WkzZ9UwUH0i7nxwSS9iXCCd0ePspbZ9tsAg0DN5MoMyfqeoDB-G5o-ZEegnoXDzsHMb6b_GBXvk6C7WtiHbF6GZs03gno44jz73viGLUbQX8YSxr3c4GWYg5')
+                spotifyApi.setAccessToken(access_token)
 
                 // search tracks whose artist's name contains 'Love'
                 spotifyApi.getAlbums(['3tx8gQqWbGwqIGZHqDNrGe', '3OZgEywV4krCZ814pTJWr7', '6EVYTRG1drKdO8OnIQBeEj', '6czdbbMtGbAkZ6ud2OMTcg'], {
@@ -326,29 +326,29 @@
                 $('#login').hide()
                 $('#loggedin').show()
     //  COMMENT OUT THIS
-//             }
-//         })
-//     } else {
-//         $('#login').show()
-//         $('#loggedin').hide()
-//     }
+            }
+        })
+    } else {
+        $('#login').show()
+        $('#loggedin').hide()
+    }
 
-//     d3.select('#login-button')
-//         .on('click', function (d) {
-//             let client_id = '59b8b201c88f468fa70b18adb98097e8' // Your client id
-//             let redirect_uri = 'http://localhost:8000' // Your redirect uri
-//             let state = generateRandomString(16)
-//             localStorage.setItem(stateKey, state)
-//             let scope = 'user-read-private user-read-email'
-//             let url = 'https://accounts.spotify.com/authorize'
-//             url += '?response_type=token'
-//             url += '&client_id=' + encodeURIComponent(client_id)
-//             url += '&scope=' + encodeURIComponent(scope)
-//             url += '&redirect_uri=' + encodeURIComponent(redirect_uri)
-//             url += '&state=' + encodeURIComponent(state)
-//             window.location = url
-//         })
-// }
+    d3.select('#login-button')
+        .on('click', function (d) {
+            let client_id = '59b8b201c88f468fa70b18adb98097e8' // Your client id
+            let redirect_uri = 'http://localhost:8000' // Your redirect uri
+            let state = generateRandomString(16)
+            localStorage.setItem(stateKey, state)
+            let scope = 'user-read-private user-read-email'
+            let url = 'https://accounts.spotify.com/authorize'
+            url += '?response_type=token'
+            url += '&client_id=' + encodeURIComponent(client_id)
+            url += '&scope=' + encodeURIComponent(scope)
+            url += '&redirect_uri=' + encodeURIComponent(redirect_uri)
+            url += '&state=' + encodeURIComponent(state)
+            window.location = url
+        })
+}
 //  COMMENT OUT THIS
 
 function flatten(array) {
