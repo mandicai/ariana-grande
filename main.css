@@ -49,7 +49,13 @@ p, ul {
   font-family: 'Oxygen', sans-serif;
 }
 
-h1 {
+ul {
+    list-style-position: inside;
+    padding: 2%;
+    border: 2px solid #ccc;
+}
+
+.title {
   border-bottom: 2px solid #cf44a6;
 }
 
@@ -96,6 +102,10 @@ select {
 .range-text {
     font-size: 7px;
     fill: #cf44a6;
+}
+
+#song-radial-chart {
+    margin-top: 3%;
 }
 
 .text-overflow {

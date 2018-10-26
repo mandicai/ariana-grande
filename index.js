@@ -47,7 +47,7 @@
 //             success: function (response) {
                 //  COMMENT OUT THIS
                 let spotifyApi = new SpotifyWebApi()
-                spotifyApi.setAccessToken('BQDVb7CJ5GRAnK6KFIjlB1gk2SH03KS78UJ3dHKawHtGkS-jHJ0nZzswhOT3q-T4fshdWdn_QLwBxUssxMJZMMCF-_uSWZi8K3tb00JXCwxjjcrd143N5wsbnSJEVst5WySYZPMXfnXbpPAVDHlSo4A-cGLcLGPn')
+                spotifyApi.setAccessToken('BQB2yDqeUTB-gm2gkClzTl-IQOFCfnJC4I0hWaJ3WkzZ9UwUH0i7nxwSS9iXCCd0ePspbZ9tsAg0DN5MoMyfqeoDB-G5o-ZEegnoXDzsHMb6b_GBXvk6C7WtiHbF6GZs03gno44jz73viGLUbQX8YSxr3c4GWYg5')
 
                 // search tracks whose artist's name contains 'Love'
                 spotifyApi.getAlbums(['3tx8gQqWbGwqIGZHqDNrGe', '3OZgEywV4krCZ814pTJWr7', '6EVYTRG1drKdO8OnIQBeEj', '6czdbbMtGbAkZ6ud2OMTcg'], {
@@ -250,53 +250,52 @@
                             })
 
                             let radialWidth = 750
-                                radialHeight = 1000
+                                radialHeight = 600
 
                             let radialSVG = d3.select('#song-radial-chart').append('svg')
                                 .attr('viewBox', '0 0' + ' ' + radialWidth + ' ' + radialHeight)
 
                             let outerRadius = 100,
-                                fullCircle = 2 * Math.pi
                                 section = 1 / 2
 
                             let radialLineGenerator = d3.radialLine().curve(d3.curveCardinalClosed)
 
                             let radialColorScale = d3.scaleSequential(d3.interpolateWarm).domain([0, 4])
 
-                            let counter = 0
-                            let intervalId = setInterval(function() {
-                                counter++
-                                if (counter === 5) {
-                                    clearInterval(intervalId)
-                                }
-                            }, 1000)
+                            let gridDimensions = { "rows": 2, "columns": 2 }
 
                             info.forEach((songInfo, index) => {
-                                let chartY = outerRadius * index * 2.5 + (outerRadius * 1.2)
+                                let curRow = Math.floor(index / gridDimensions.columns)
+                                let curCol = index % gridDimensions.columns
+
+                                let currentCenter = {
+                                    x: (2 * curCol + 1) * (radialWidth / (gridDimensions.columns * 2)),
+                                    y: (2 * curRow + 1) * (radialHeight / (gridDimensions.rows * 2))
+                                }
 
                                 let radialGroup = radialSVG.append('g')
-                                    .attr("transform", "translate(" + radialWidth / 2 + "," + chartY + ")")
+                                    .attr("transform", "translate(" + currentCenter.x + "," + currentCenter.y + ")")
 
                                 let radialOuterCircle = radialSVG.append('circle').attr('r', outerRadius)
-                                    .attr("transform", "translate(" + radialWidth / 2 + "," + chartY + ")")
+                                    .attr("transform", "translate(" + currentCenter.x + "," + currentCenter.y + ")")
                                     .attr('fill', 'none')
                                     .attr('stroke', 'gray')
 
                                 let radialMidCircle = radialSVG.append('circle').attr('r', 50)
-                                    .attr("transform", "translate(" + radialWidth / 2 + "," + chartY + ")")
+                                    .attr("transform", "translate(" + currentCenter.x + "," + currentCenter.y + ")")
                                     .attr('fill', 'none')
                                     .attr('stroke', 'gray')
 
                                 let radialInnerCircle = radialSVG.append('circle').attr('r', 1)
-                                    .attr("transform", "translate(" + radialWidth / 2 + "," + chartY + ")")
+                                    .attr("transform", "translate(" + currentCenter.x + "," + currentCenter.y + ")")
                                     .attr('fill', 'none')
                                     .attr('stroke', 'gray')
 
                                 radialGroup
                                   .append('text')
                                   .text(songInfo[0].album)
-                                  .attr('dx', -radialWidth/2.5)
-                                  .attr('dy', -50)
+                                  .attr('text-anchor', 'middle')
+                                  .attr('dy', -125)
 
                                 songInfo.forEach((song, i) => {
                                     let points = [
