@@ -36,6 +36,23 @@ body {
   opacity: 0.9;
 }
 
+p, ul {
+  font-family: 'Oxygen', sans-serif;
+}
+
+h1 {
+  border-bottom: 2px solid #cf44a6;
+}
+
+h3 {
+  display: inline
+}
+
+select {
+  margin-left: 35%;
+  min-width: 15%;
+}
+
 #song-line-chart {
     width: 100%;
     height: 75%;
@@ -43,12 +60,12 @@ body {
 
 #property {
     text-decoration: underline;
-    text-decoration-color: #ed6176;
+    text-decoration-color: #cf44a6;
 }
 
-.bubbles {
+.bubble {
     stroke: gray;
-    opacity: 0.5;
+    opacity: 0.75;
 }
 
 .x-axis, .y-axis {
@@ -63,9 +80,13 @@ body {
     display: none;
 }
 
-
 .album-text {
     font-size: 9px;
+}
+
+.range-text {
+    font-size: 7px;
+    fill: #cf44a6;
 }
 
 .text-overflow {
