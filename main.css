@@ -36,6 +36,15 @@ body {
   opacity: 0.9;
 }
 
+img {
+  position: fixed;
+  z-index: -1;
+  opacity: 0.1;
+  top: 0px;
+  left: 65%;
+  width: 450px;
+}
+
 p, ul {
   font-family: 'Oxygen', sans-serif;
 }
@@ -49,7 +58,7 @@ h3 {
 }
 
 select {
-  margin-left: 35%;
+  margin-left: 15%;
   min-width: 15%;
 }
 
