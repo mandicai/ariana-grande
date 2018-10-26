@@ -26,14 +26,14 @@
 //     }
 //     return text
 // }
-//
+
 // let userProfilePlaceholder = document.getElementById('show_access_token')
-//
+
 // let params = getHashParams()
 // let access_token = params.access_token,
 //     state = params.state,
 //     storedState = localStorage.getItem(stateKey)
-//
+
 // if (access_token && (state == null || state !== storedState)) {
 //     alert('There was an error during authentication, or you need to log in again!')
 // } else {
@@ -47,7 +47,7 @@
 //             success: function (response) {
                 //  COMMENT OUT THIS
                 let spotifyApi = new SpotifyWebApi()
-                spotifyApi.setAccessToken('BQD21dziupW9bIYihgYO0WkUjs0A_CuT5aZJFpGGI5NkC7LnBB4Q6MxqjjiPAs6CXjbrrFwojE2FsVfcVAWXF1tEj1CAsnOewsheUkXvueb72v7--YliHXamQRGNqocCTZLPPlr15pcS6G2lW_iUmwRjKGjDh0--')
+                spotifyApi.setAccessToken('BQDVb7CJ5GRAnK6KFIjlB1gk2SH03KS78UJ3dHKawHtGkS-jHJ0nZzswhOT3q-T4fshdWdn_QLwBxUssxMJZMMCF-_uSWZi8K3tb00JXCwxjjcrd143N5wsbnSJEVst5WySYZPMXfnXbpPAVDHlSo4A-cGLcLGPn')
 
                 // search tracks whose artist's name contains 'Love'
                 spotifyApi.getAlbums(['3tx8gQqWbGwqIGZHqDNrGe', '3OZgEywV4krCZ814pTJWr7', '6EVYTRG1drKdO8OnIQBeEj', '6czdbbMtGbAkZ6ud2OMTcg'], {
@@ -263,6 +263,14 @@
 
                             let radialColorScale = d3.scaleSequential(d3.interpolateWarm).domain([0, 4])
 
+                            let counter = 0
+                            let intervalId = setInterval(function() {
+                                counter++
+                                if (counter === 5) {
+                                    clearInterval(intervalId)
+                                }
+                            }, 1000)
+
                             info.forEach((songInfo, index) => {
                                 let chartY = outerRadius * index * 2.5 + (outerRadius * 1.2)
 
@@ -300,13 +308,18 @@
 
                                     let radialLine = radialLineGenerator(points)
 
-                                    radialGroup
-                                        .append('path')
-                                        .attr('d', radialLine)
-                                        .attr('stroke', radialColorScale(index))
-                                        .attr('stroke-width', '2px')
-                                        .attr('fill', 'none')
-                                        .attr('opacity', 0.5)
+                                    setTimeout(function () {
+                                        radialGroup
+                                            .append('path')
+                                            .attr('d', radialLine)
+                                            .attr('stroke', radialColorScale(index))
+                                            .attr('stroke-width', '2px')
+                                            .attr('fill', 'none')
+                                            .attr('opacity', 0.0)
+                                            .transition()
+                                            .attr('opacity', 0.5)
+                                    },
+                                    1000 * i)
                                 })
                             })
                         })
@@ -320,7 +333,7 @@
 //         $('#login').show()
 //         $('#loggedin').hide()
 //     }
-//
+
 //     d3.select('#login-button')
 //         .on('click', function (d) {
 //             let client_id = '59b8b201c88f468fa70b18adb98097e8' // Your client id
