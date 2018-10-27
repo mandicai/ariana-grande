@@ -52,15 +52,20 @@ p, ul {
 ul {
     list-style-position: inside;
     padding: 2%;
-    border: 2px solid #ccc;
+    border: 2px solid #ffa7e5;
 }
 
 .title {
-  border-bottom: 2px solid #cf44a6;
+  border-bottom: 2px solid #cccfff;
 }
 
 h3 {
-  display: inline
+  display: inline;
+  border-bottom: 2px solid #cccfff;
+}
+
+p {
+    margin-top: 2%;
 }
 
 select {
@@ -68,18 +73,26 @@ select {
   min-width: 15%;
 }
 
-#song-line-chart {
+#song-radial-chart-one {
+    margin-top: 3%;
+}
+
+.radial-axis line {
+    stroke: #ccc;
+    stroke-width: 0.5px;
+}
+
+#song-scatter-chart {
     width: 100%;
     height: 75%;
 }
 
 #property {
-    text-decoration: underline;
-    text-decoration-color: #cf44a6;
+    color: #868efc;
 }
 
 .bubble {
-    stroke: gray;
+    stroke: #ccc;
     opacity: 0.75;
 }
 
@@ -101,11 +114,7 @@ select {
 
 .range-text {
     font-size: 7px;
-    fill: #cf44a6;
-}
-
-#song-radial-chart {
-    margin-top: 3%;
+    fill: #868efc;
 }
 
 .text-overflow {

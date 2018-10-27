@@ -1,53 +1,53 @@
 //  COMMENT OUT THIS
-let stateKey = 'spotify_auth_state'
-/**
- * Obtains parameters from the hash of the URL
- * @return Object
- */
-function getHashParams() {
-    let hashParams = {}
-    let e, r = /([^&;=]+)=?([^&;]*)/g,
-        q = window.location.hash.substring(1)
-    while (e = r.exec(q)) {
-        hashParams[e[1]] = decodeURIComponent(e[2])
-    }
-    return hashParams
-}
-/**
- * Generates a random string containing numbers and letters
- * @param  {number} length The length of the string
- * @return {string} The generated string
- */
-function generateRandomString(length) {
-    let text = ''
-    let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-    for (let i = 0; i < length; i++) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length))
-    }
-    return text
-}
+// let stateKey = 'spotify_auth_state'
+// /**
+//  * Obtains parameters from the hash of the URL
+//  * @return Object
+//  */
+// function getHashParams() {
+//     let hashParams = {}
+//     let e, r = /([^&;=]+)=?([^&;]*)/g,
+//         q = window.location.hash.substring(1)
+//     while (e = r.exec(q)) {
+//         hashParams[e[1]] = decodeURIComponent(e[2])
+//     }
+//     return hashParams
+// }
+// /**
+//  * Generates a random string containing numbers and letters
+//  * @param  {number} length The length of the string
+//  * @return {string} The generated string
+//  */
+// function generateRandomString(length) {
+//     let text = ''
+//     let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+//     for (let i = 0; i < length; i++) {
+//         text += possible.charAt(Math.floor(Math.random() * possible.length))
+//     }
+//     return text
+// }
 
-let userProfilePlaceholder = document.getElementById('show_access_token')
+// let userProfilePlaceholder = document.getElementById('show_access_token')
 
-let params = getHashParams()
-let access_token = params.access_token,
-    state = params.state,
-    storedState = localStorage.getItem(stateKey)
+// let params = getHashParams()
+// let access_token = params.access_token,
+//     state = params.state,
+//     storedState = localStorage.getItem(stateKey)
 
-if (access_token && (state == null || state !== storedState)) {
-    alert('There was an error during authentication, or you need to log in again!')
-} else {
-    localStorage.removeItem(stateKey)
-    if (access_token) {
-        $.ajax({
-            url: 'https://api.spotify.com/v1/me',
-            headers: {
-                'Authorization': 'Bearer ' + access_token
-            },
-            success: function (response) {
+// if (access_token && (state == null || state !== storedState)) {
+//     alert('There was an error during authentication, or you need to log in again!')
+// } else {
+//     localStorage.removeItem(stateKey)
+//     if (access_token) {
+//         $.ajax({
+//             url: 'https://api.spotify.com/v1/me',
+//             headers: {
+//                 'Authorization': 'Bearer ' + access_token
+//             },
+//             success: function (response) {
                 //  COMMENT OUT THIS
                 let spotifyApi = new SpotifyWebApi()
-                spotifyApi.setAccessToken(access_token)
+                spotifyApi.setAccessToken('BQAav-kxiiRFzf9vR-WiEdqMkaD828BcoomoEwn_0-0Ws-M8x0s5eztR1OhmjyJOT3zaGoPn_g0e68vH2GqejBVC6OpfpUnNUQF6BFIlP5UafCQcGf7qrZeKWeQIuS41U323iFSUX9jRVhfc2L4eDd1X7Y3jv2zG')
 
                 // search tracks whose artist's name contains 'Love'
                 spotifyApi.getAlbums(['3tx8gQqWbGwqIGZHqDNrGe', '3OZgEywV4krCZ814pTJWr7', '6EVYTRG1drKdO8OnIQBeEj', '6czdbbMtGbAkZ6ud2OMTcg'], {
@@ -104,7 +104,7 @@ if (access_token && (state == null || state !== storedState)) {
                                     left: 50
                                 }
 
-                            let svg = d3.select('#song-chart').append('svg')
+                            let svg = d3.select('#song-scatter-chart').append('svg')
                                 .attr('viewBox', '0 0' + ' ' + width + ' ' + height)
 
                             let y = d3.scaleTime()
@@ -140,7 +140,7 @@ if (access_token && (state == null || state !== storedState)) {
                             let xAxisGroup = svg.append('g')
                                 .call(xAxis)
 
-                            let colorScale = d3.scaleSequential(d3.interpolateWarm).domain([0, 4])
+                            let colorScale = d3.scaleSequential(d3.interpolateWarm).domain([0, info.length])
 
                             let g = svg.append('g').attr('class', 'bubbles')
 
@@ -213,6 +213,7 @@ if (access_token && (state == null || state !== storedState)) {
                                 d3.select('#property').text(yColumn)
                             }
 
+                            // INITIAL RENDER
                             render()
 
                             // DROPDOWN MENU HANDLING
@@ -249,20 +250,93 @@ if (access_token && (state == null || state !== storedState)) {
                                 selectedOption: yColumn
                             })
 
-                            let radialWidth = 750
-                                radialHeight = 600
-
-                            let radialSVG = d3.select('#song-radial-chart').append('svg')
-                                .attr('viewBox', '0 0' + ' ' + radialWidth + ' ' + radialHeight)
+                            let radialWidth = 1000,
+                                radialHeight = 600,
+                                radialHeightOne = 325
 
                             let outerRadius = 100,
-                                section = 1 / 2
+                                radialLineGenerator = d3.radialLine().curve(d3.curveCardinalClosed),
+                                radialColorScale = d3.scaleSequential(d3.interpolateWarm).domain([0, info.length]),
+                                gridDimensions = { "rows": 2, "columns": 2 },
+                                circleRadii = [outerRadius, outerRadius / 2, 1],
+                                trackFeatures = ['acousticness', 'danceability', 'energy', 'valence']
+                            
+                            let radialScale = d3.scaleLinear()
+                                .domain([0, trackFeatures.length])
+                                .range([0, 2 * Math.PI])
+                            
+                            // DIAGRAM OF RADIAL CHART
+                            let radialSVGOne = d3.select('#song-radial-chart-one').append('svg')
+                                .attr('viewBox', '0 0' + ' ' + radialWidth + ' ' + radialHeightOne)
+                            
+                            circleRadii.forEach(c => {
+                                radialSVGOne.append('circle').attr('r', c)
+                                    .attr('transform', "translate(" + radialWidth / 2 + "," + radialHeightOne / 2 + ")")
+                                    .attr('fill', 'none')
+                                    .attr('stroke', 'gray')
+                            })
+                            
+                            let axialAxis = radialSVGOne.append('g')
+                                .attr('class', 'radial-axis')
+                                .attr('transform', "translate(" + radialWidth / 2 + "," + radialHeightOne / 2 + ")")
+                                .selectAll('g')
+                                .data(radialScale.ticks(trackFeatures.length))
+                                .enter().append('g')
+                                .attr('transform', d => 'rotate(' + (rad2deg(radialScale(d))) + ')')
 
-                            let radialLineGenerator = d3.radialLine().curve(d3.curveCardinalClosed)
+                            axialAxis.append('line')
+                                .attr('x1', outerRadius)
+                                .attr('x2', outerRadius + 15)
 
-                            let radialColorScale = d3.scaleSequential(d3.interpolateWarm).domain([0, 4])
+                            // figure out a better way to do this text positioning...
+                            axialAxis.append('text')
+                                .text(i => trackFeatures[i])
+                                .attr('transform', d => 'rotate(' + (-rad2deg(radialScale(d))) + ',' + outerRadius + ',0)')
+                                .attr('text-anchor', 'middle')
+                                .attr('dx', d => {
+                                    if (radialScale(d) === Math.PI) {
+                                        return outerRadius - 50
+                                    } else if (radialScale(d) === 0) {
+                                        return outerRadius + 70
+                                    } else {
+                                        return outerRadius
+                                    }
+                                })
+                                .attr('dy', d => {
+                                    if (radialScale(d) === Math.PI * 1.5) {
+                                        return -30
+                                    } else if (radialScale(d) === Math.PI / 2) {
+                                        return 35
+                                    }
+                                })
+                            
+                            let radialGroupOne = radialSVGOne.append('g')
+                                .attr('transform', "translate(" + radialWidth / 2 + "," + radialHeightOne / 2 + ")")
 
-                            let gridDimensions = { "rows": 2, "columns": 2 }
+                            let points = [
+                                [radialScale(0), info[0][0][trackFeatures[0]] * outerRadius],
+                                [radialScale(1), info[0][0][trackFeatures[1]] * outerRadius],
+                                [radialScale(2), info[0][0][trackFeatures[2]] * outerRadius],
+                                [radialScale(3), info[0][0][trackFeatures[3]] * outerRadius],
+                            ]
+
+                            let radialLineOne = radialLineGenerator(points)
+
+                            setTimeout(function () {
+                                radialGroupOne
+                                    .append('path')
+                                    .attr('d', radialLineOne)
+                                    .attr('stroke', radialColorScale(0))
+                                    .attr('stroke-width', '2px')
+                                    .attr('fill', 'none')
+                                    .attr('opacity', 0.0)
+                                    .transition().duration(500)
+                                    .attr('opacity', 0.5)
+                            }, 1000)
+
+                            // RADIAL CHARTS OF ALL ALBUMS
+                            let radialSVG = d3.select('#song-radial-chart').append('svg')
+                                .attr('viewBox', '0 0' + ' ' + radialWidth + ' ' + radialHeight)
 
                             info.forEach((songInfo, index) => {
                                 let curRow = Math.floor(index / gridDimensions.columns)
@@ -274,35 +348,61 @@ if (access_token && (state == null || state !== storedState)) {
                                 }
 
                                 let radialGroup = radialSVG.append('g')
-                                    .attr("transform", "translate(" + currentCenter.x + "," + currentCenter.y + ")")
+                                    .attr('transform', "translate(" + currentCenter.x + "," + currentCenter.y + ")")
 
-                                let radialOuterCircle = radialSVG.append('circle').attr('r', outerRadius)
-                                    .attr("transform", "translate(" + currentCenter.x + "," + currentCenter.y + ")")
-                                    .attr('fill', 'none')
-                                    .attr('stroke', 'gray')
-
-                                let radialMidCircle = radialSVG.append('circle').attr('r', 50)
-                                    .attr("transform", "translate(" + currentCenter.x + "," + currentCenter.y + ")")
-                                    .attr('fill', 'none')
-                                    .attr('stroke', 'gray')
-
-                                let radialInnerCircle = radialSVG.append('circle').attr('r', 1)
-                                    .attr("transform", "translate(" + currentCenter.x + "," + currentCenter.y + ")")
-                                    .attr('fill', 'none')
-                                    .attr('stroke', 'gray')
+                                circleRadii.forEach(c => {
+                                    radialSVG.append('circle').attr('r', c)
+                                        .attr('transform', "translate(" + currentCenter.x + "," + currentCenter.y + ")")
+                                        .attr('fill', 'none')
+                                        .attr('stroke', 'gray')
+                                })                    
 
                                 radialGroup
                                   .append('text')
                                   .text(songInfo[0].album)
                                   .attr('text-anchor', 'middle')
-                                  .attr('dy', -125)
+                                  .attr('dy', -outerRadius - 25)
+                                
+                                let axialAxis = radialSVGOne.append('g')
+                                    .attr('class', 'radial-axis')
+                                    .attr('transform', "translate(" + radialWidth / 2 + "," + radialHeightOne / 2 + ")")
+                                    .selectAll('g')
+                                    .data(radialScale.ticks(trackFeatures.length))
+                                    .enter().append('g')
+                                    .attr('transform', d => 'rotate(' + (rad2deg(radialScale(d))) + ')')
+
+                                axialAxis.append('line')
+                                    .attr('x1', outerRadius)
+                                    .attr('x2', outerRadius + 15)
+
+                                // figure out a better way to do this text positioning...
+                                axialAxis.append('text')
+                                    .text(i => trackFeatures[i])
+                                    .attr('transform', d => 'rotate(' + (-rad2deg(radialScale(d))) + ',' + outerRadius + ',0)')
+                                    .attr('text-anchor', 'middle')
+                                    .attr('dx', d => {
+                                        if (radialScale(d) === Math.PI) {
+                                            return outerRadius - 50
+                                        } else if (radialScale(d) === 0) {
+                                            return outerRadius + 70
+                                        } else {
+                                            return outerRadius
+                                        }
+                                    })
+                                    .attr('dy', d => {
+                                        if (radialScale(d) === Math.PI * 1.5) {
+                                            return -30
+                                        } else if (radialScale(d) === Math.PI / 2) {
+                                            return 35
+                                        }
+                                    })
 
                                 songInfo.forEach((song, i) => {
                                     let points = [
-                                        [0, song.acousticness * outerRadius],
-                                        [Math.PI * section, song.danceability * outerRadius],
-                                        [Math.PI, song.energy * outerRadius],
-                                        [Math.PI * (section * 3), song.valence * outerRadius],
+                                        [radialScale(0), song[trackFeatures[0]] * outerRadius],
+                                        [radialScale(1), song[trackFeatures[1]] * outerRadius],
+                                        [radialScale(2), song[trackFeatures[2]] * outerRadius],
+                                        [radialScale(3), song[trackFeatures[3]] * outerRadius],
                                     ]
 
                                     let radialLine = radialLineGenerator(points)
@@ -326,31 +426,36 @@ if (access_token && (state == null || state !== storedState)) {
                 $('#login').hide()
                 $('#loggedin').show()
     //  COMMENT OUT THIS
-            }
-        })
-    } else {
-        $('#login').show()
-        $('#loggedin').hide()
-    }
+//             }
+//         })
+//     } else {
+//         $('#login').show()
+//         $('#loggedin').hide()
+//     }
 
-    d3.select('#login-button')
-        .on('click', function (d) {
-            let client_id = '59b8b201c88f468fa70b18adb98097e8' // Your client id
-            let redirect_uri = 'http://localhost:8000' // Your redirect uri
-            let state = generateRandomString(16)
-            localStorage.setItem(stateKey, state)
-            let scope = 'user-read-private user-read-email'
-            let url = 'https://accounts.spotify.com/authorize'
-            url += '?response_type=token'
-            url += '&client_id=' + encodeURIComponent(client_id)
-            url += '&scope=' + encodeURIComponent(scope)
-            url += '&redirect_uri=' + encodeURIComponent(redirect_uri)
-            url += '&state=' + encodeURIComponent(state)
-            window.location = url
-        })
-}
+//     d3.select('#login-button')
+//         .on('click', function (d) {
+//             let client_id = '59b8b201c88f468fa70b18adb98097e8' // Your client id
+//             let redirect_uri = 'http://localhost:8000' // Your redirect uri
+//             let state = generateRandomString(16)
+//             localStorage.setItem(stateKey, state)
+//             let scope = 'user-read-private user-read-email'
+//             let url = 'https://accounts.spotify.com/authorize'
+//             url += '?response_type=token'
+//             url += '&client_id=' + encodeURIComponent(client_id)
+//             url += '&scope=' + encodeURIComponent(scope)
+//             url += '&redirect_uri=' + encodeURIComponent(redirect_uri)
+//             url += '&state=' + encodeURIComponent(state)
+//             window.location = url
+//         })
+// }
 //  COMMENT OUT THIS
 
 function flatten(array) {
   return array.reduce((acc, val) => acc.concat(val), [])
 }
+
+function rad2deg(angle) {
+    return angle * 180 / Math.PI
+}
+
