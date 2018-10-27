@@ -442,7 +442,7 @@ if (access_token && (state == null || state !== storedState)) {
     d3.select('#login-button')
         .on('click', function (d) {
             let client_id = '59b8b201c88f468fa70b18adb98097e8' // Your client id
-            let redirect_uri = 'http://localhost:8000' // Your redirect uri
+            let redirect_uri = 'https://mandicai.github.io/ariana-grande/' // Your redirect uri
             let state = generateRandomString(16)
             localStorage.setItem(stateKey, state)
             let scope = 'user-read-private user-read-email'
