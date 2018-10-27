@@ -1,53 +1,53 @@
 //  COMMENT OUT THIS
-// let stateKey = 'spotify_auth_state'
-// /**
-//  * Obtains parameters from the hash of the URL
-//  * @return Object
-//  */
-// function getHashParams() {
-//     let hashParams = {}
-//     let e, r = /([^&;=]+)=?([^&;]*)/g,
-//         q = window.location.hash.substring(1)
-//     while (e = r.exec(q)) {
-//         hashParams[e[1]] = decodeURIComponent(e[2])
-//     }
-//     return hashParams
-// }
-// /**
-//  * Generates a random string containing numbers and letters
-//  * @param  {number} length The length of the string
-//  * @return {string} The generated string
-//  */
-// function generateRandomString(length) {
-//     let text = ''
-//     let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-//     for (let i = 0; i < length; i++) {
-//         text += possible.charAt(Math.floor(Math.random() * possible.length))
-//     }
-//     return text
-// }
+let stateKey = 'spotify_auth_state'
+/**
+ * Obtains parameters from the hash of the URL
+ * @return Object
+ */
+function getHashParams() {
+    let hashParams = {}
+    let e, r = /([^&;=]+)=?([^&;]*)/g,
+        q = window.location.hash.substring(1)
+    while (e = r.exec(q)) {
+        hashParams[e[1]] = decodeURIComponent(e[2])
+    }
+    return hashParams
+}
+/**
+ * Generates a random string containing numbers and letters
+ * @param  {number} length The length of the string
+ * @return {string} The generated string
+ */
+function generateRandomString(length) {
+    let text = ''
+    let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    for (let i = 0; i < length; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length))
+    }
+    return text
+}
 
-// let userProfilePlaceholder = document.getElementById('show_access_token')
+let userProfilePlaceholder = document.getElementById('show_access_token')
 
-// let params = getHashParams()
-// let access_token = params.access_token,
-//     state = params.state,
-//     storedState = localStorage.getItem(stateKey)
+let params = getHashParams()
+let access_token = params.access_token,
+    state = params.state,
+    storedState = localStorage.getItem(stateKey)
 
-// if (access_token && (state == null || state !== storedState)) {
-//     alert('There was an error during authentication, or you need to log in again!')
-// } else {
-//     localStorage.removeItem(stateKey)
-//     if (access_token) {
-//         $.ajax({
-//             url: 'https://api.spotify.com/v1/me',
-//             headers: {
-//                 'Authorization': 'Bearer ' + access_token
-//             },
-//             success: function (response) {
+if (access_token && (state == null || state !== storedState)) {
+    alert('There was an error during authentication, or you need to log in again!')
+} else {
+    localStorage.removeItem(stateKey)
+    if (access_token) {
+        $.ajax({
+            url: 'https://api.spotify.com/v1/me',
+            headers: {
+                'Authorization': 'Bearer ' + access_token
+            },
+            success: function (response) {
                 //  COMMENT OUT THIS
                 let spotifyApi = new SpotifyWebApi()
-                spotifyApi.setAccessToken('BQAav-kxiiRFzf9vR-WiEdqMkaD828BcoomoEwn_0-0Ws-M8x0s5eztR1OhmjyJOT3zaGoPn_g0e68vH2GqejBVC6OpfpUnNUQF6BFIlP5UafCQcGf7qrZeKWeQIuS41U323iFSUX9jRVhfc2L4eDd1X7Y3jv2zG')
+                spotifyApi.setAccessToken(access_token)
 
                 // search tracks whose artist's name contains 'Love'
                 spotifyApi.getAlbums(['3tx8gQqWbGwqIGZHqDNrGe', '3OZgEywV4krCZ814pTJWr7', '6EVYTRG1drKdO8OnIQBeEj', '6czdbbMtGbAkZ6ud2OMTcg'], {
@@ -258,7 +258,7 @@
                                 radialLineGenerator = d3.radialLine().curve(d3.curveCardinalClosed),
                                 radialColorScale = d3.scaleSequential(d3.interpolateWarm).domain([0, info.length]),
                                 gridDimensions = { "rows": 2, "columns": 2 },
-                                circleRadii = [outerRadius, outerRadius / 2, 1],
+                                circleRadii = [outerRadius, outerRadius / 2, outerRadius / 4],
                                 trackFeatures = ['acousticness', 'danceability', 'energy', 'valence']
                             
                             let radialScale = d3.scaleLinear()
@@ -274,6 +274,13 @@
                                     .attr('transform', "translate(" + radialWidth / 2 + "," + radialHeightOne / 2 + ")")
                                     .attr('fill', 'none')
                                     .attr('stroke', 'gray')
+                                
+                                // scale labels
+                                radialSVGOne.append('text')
+                                    .text(c/outerRadius)
+                                    .attr('transform', "translate(" + radialWidth / 2 + "," + (radialHeightOne / 2 - (c + 5)) + ")") // + " rotate(-30, 0," + ((outerRadius + 40) * (c / outerRadius)) + ")"
+                                    .attr('text-anchor', 'middle')
+                                    .attr('class', 'radial-axis radial-scale-text')
                             })
                             
                             let axialAxis = radialSVGOne.append('g')
@@ -284,11 +291,6 @@
                                 .enter().append('g')
                                 .attr('transform', d => 'rotate(' + (rad2deg(radialScale(d)) - 90) + ')') // adjust because d3 radial line generator and svg position 0 degrees at different places
 
-                            axialAxis.append('line')
-                                .attr('x1', outerRadius)
-                                .attr('x2', outerRadius + 15)
-
-                            console.log(info[0][0])
                             // figure out a better way to do this text positioning...
                             axialAxis.append('text')
                                 .text(i => trackFeatures[i])
@@ -393,14 +395,34 @@
 
                                     setTimeout(function () {
                                         radialGroup
+                                            .data([song])
                                             .append('path')
                                             .attr('d', radialLine)
+                                            .on('mousemove', function (d) {
+                                                d3.select('#tooltip').style('display', 'initial')
+                                                d3.select('#tooltip').html('<div class="song-name">' + d.name + '</div>')
+                                                    .style('left', (d3.event.pageX + 10) + 'px').style('top', (d3.event.pageY) + 'px')
+
+                                                let ringUnderMouse = this
+
+                                                d3.selectAll('.radial-circle.' + d.album.replace(/[\(\)\-\s]+/g, '')).transition().style('opacity', function () {
+                                                    return (this === ringUnderMouse) ? 1.0 : 0.1
+                                                })
+                                            })
+                                            .on('mouseout', function (d) {
+                                                d3.selectAll('.radial-circle.' + d.album.replace(/[\(\)\-\s]+/g, '')).transition().style('opacity', 0.5)
+
+                                                d3.select('#tooltip').style('display', 'none')
+                                            })
                                             .attr('stroke', radialColorScale(index))
                                             .attr('stroke-width', '2px')
                                             .attr('fill', 'none')
-                                            .attr('opacity', 0.0)
+                                            .attr('class', d => {
+                                                return 'radial-circle ' + d.album.replace(/[\(\)\-\s]+/g, '')
+                                            })
+                                            .style('opacity', 0.0)
                                             .transition()
-                                            .attr('opacity', 0.5)
+                                            .style('opacity', 0.5)
                                     },
                                     1000 * i)
                                 })
@@ -410,29 +432,29 @@
                 $('#login').hide()
                 $('#loggedin').show()
     //  COMMENT OUT THIS
-//             }
-//         })
-//     } else {
-//         $('#login').show()
-//         $('#loggedin').hide()
-//     }
+            }
+        })
+    } else {
+        $('#login').show()
+        $('#loggedin').hide()
+    }
 
-//     d3.select('#login-button')
-//         .on('click', function (d) {
-//             let client_id = '59b8b201c88f468fa70b18adb98097e8' // Your client id
-//             let redirect_uri = 'http://localhost:8000' // Your redirect uri
-//             let state = generateRandomString(16)
-//             localStorage.setItem(stateKey, state)
-//             let scope = 'user-read-private user-read-email'
-//             let url = 'https://accounts.spotify.com/authorize'
-//             url += '?response_type=token'
-//             url += '&client_id=' + encodeURIComponent(client_id)
-//             url += '&scope=' + encodeURIComponent(scope)
-//             url += '&redirect_uri=' + encodeURIComponent(redirect_uri)
-//             url += '&state=' + encodeURIComponent(state)
-//             window.location = url
-//         })
-// }
+    d3.select('#login-button')
+        .on('click', function (d) {
+            let client_id = '59b8b201c88f468fa70b18adb98097e8' // Your client id
+            let redirect_uri = 'http://localhost:8000' // Your redirect uri
+            let state = generateRandomString(16)
+            localStorage.setItem(stateKey, state)
+            let scope = 'user-read-private user-read-email'
+            let url = 'https://accounts.spotify.com/authorize'
+            url += '?response_type=token'
+            url += '&client_id=' + encodeURIComponent(client_id)
+            url += '&scope=' + encodeURIComponent(scope)
+            url += '&redirect_uri=' + encodeURIComponent(redirect_uri)
+            url += '&state=' + encodeURIComponent(state)
+            window.location = url
+        })
+}
 //  COMMENT OUT THIS
 
 function flatten(array) {

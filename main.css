@@ -60,26 +60,30 @@ ul {
 }
 
 h3 {
-  display: inline;
   border-bottom: 2px solid #cccfff;
 }
 
 p {
     margin-top: 2%;
+    margin-bottom: 2%;
 }
 
 select {
-  margin-left: 15%;
   min-width: 15%;
 }
 
-#song-radial-chart-one {
+#song-radial-chart-one, #song-radial-chart {
     margin-top: 3%;
 }
 
 .radial-axis line {
     stroke: #ccc;
     stroke-width: 0.5px;
+}
+
+.radial-axis.radial-scale-text {
+    font-family: 'Oxygen';
+    font-size: 10px;
 }
 
 #song-scatter-chart {
