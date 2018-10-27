@@ -148,7 +148,7 @@
                             let yColumn = columns[0]
 
                             d3.select('#property').text(yColumn)
-
+                            
                             info.forEach((songInfo, index) => {
                                 let albumData = [{
                                     album: songInfo[0].album,
@@ -282,30 +282,31 @@
                                 .selectAll('g')
                                 .data(radialScale.ticks(trackFeatures.length))
                                 .enter().append('g')
-                                .attr('transform', d => 'rotate(' + (rad2deg(radialScale(d))) + ')')
+                                .attr('transform', d => 'rotate(' + (rad2deg(radialScale(d)) - 90) + ')') // adjust because d3 radial line generator and svg position 0 degrees at different places
 
                             axialAxis.append('line')
                                 .attr('x1', outerRadius)
                                 .attr('x2', outerRadius + 15)
 
+                            console.log(info[0][0])
                             // figure out a better way to do this text positioning...
                             axialAxis.append('text')
                                 .text(i => trackFeatures[i])
-                                .attr('transform', d => 'rotate(' + (-rad2deg(radialScale(d))) + ',' + outerRadius + ',0)')
+                                .attr('transform', d => 'rotate(' + (-rad2deg(radialScale(d)) + 90) + ',' + outerRadius + ',0)')
                                 .attr('text-anchor', 'middle')
                                 .attr('dx', d => {
-                                    if (radialScale(d) === Math.PI) {
+                                    if (radialScale(d) === Math.PI * 1.5) {
                                         return outerRadius - 50
-                                    } else if (radialScale(d) === 0) {
+                                    } else if (radialScale(d) === Math.PI / 2) {
                                         return outerRadius + 70
                                     } else {
                                         return outerRadius
                                     }
                                 })
                                 .attr('dy', d => {
-                                    if (radialScale(d) === Math.PI * 1.5) {
+                                    if (radialScale(d) === 0) {
                                         return -30
-                                    } else if (radialScale(d) === Math.PI / 2) {
+                                    } else if (radialScale(d) === Math.PI) {
                                         return 35
                                     }
                                 })
@@ -362,40 +363,23 @@
                                   .text(songInfo[0].album)
                                   .attr('text-anchor', 'middle')
                                   .attr('dy', -outerRadius - 25)
-                                
-                                let axialAxis = radialSVGOne.append('g')
-                                    .attr('class', 'radial-axis')
-                                    .attr('transform', "translate(" + radialWidth / 2 + "," + radialHeightOne / 2 + ")")
-                                    .selectAll('g')
-                                    .data(radialScale.ticks(trackFeatures.length))
-                                    .enter().append('g')
-                                    .attr('transform', d => 'rotate(' + (rad2deg(radialScale(d))) + ')')
 
-                                axialAxis.append('line')
-                                    .attr('x1', outerRadius)
-                                    .attr('x2', outerRadius + 15)
+                                // keep for checking labels
+                                // let axialAxis = radialSVG.append('g')
+                                //     .attr('class', 'radial-axis')
+                                //     .attr("transform", "translate(" + currentCenter.x + "," + currentCenter.y + ")")
+                                //     .selectAll('g')
+                                //     .data(radialScale.ticks(trackFeatures.length))
+                                //     .enter().append('g')
+                                //     .attr('transform', d => 'rotate(' + (rad2deg(radialScale(d))) + ')')
 
-                                // figure out a better way to do this text positioning...
-                                axialAxis.append('text')
-                                    .text(i => trackFeatures[i])
-                                    .attr('transform', d => 'rotate(' + (-rad2deg(radialScale(d))) + ',' + outerRadius + ',0)')
-                                    .attr('text-anchor', 'middle')
-                                    .attr('dx', d => {
-                                        if (radialScale(d) === Math.PI) {
-                                            return outerRadius - 50
-                                        } else if (radialScale(d) === 0) {
-                                            return outerRadius + 70
-                                        } else {
-                                            return outerRadius
-                                        }
-                                    })
-                                    .attr('dy', d => {
-                                        if (radialScale(d) === Math.PI * 1.5) {
-                                            return -30
-                                        } else if (radialScale(d) === Math.PI / 2) {
-                                            return 35
-                                        }
-                                    })
+                                // axialAxis.append('line')
+                                //     .attr('x1', outerRadius)
+                                //     .attr('x2', outerRadius + 15)
+
+                                // axialAxis.append('text')
+                                //     .text((d,i) => trackFeatures[i])
+                                //     .attr('dx', outerRadius)
 
                                 songInfo.forEach((song, i) => {
                                     let points = [
