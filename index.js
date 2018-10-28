@@ -1,55 +1,54 @@
 //  COMMENT OUT THIS
-// let stateKey = 'spotify_auth_state'
-// /**
-//  * Obtains parameters from the hash of the URL
-//  * @return Object
-//  */
-// function getHashParams() {
-//     let hashParams = {}
-//     let e, r = /([^&;=]+)=?([^&;]*)/g,
-//         q = window.location.hash.substring(1)
-//     while (e = r.exec(q)) {
-//         hashParams[e[1]] = decodeURIComponent(e[2])
-//     }
-//     return hashParams
-// }
-// /**
-//  * Generates a random string containing numbers and letters
-//  * @param  {number} length The length of the string
-//  * @return {string} The generated string
-//  */
-// function generateRandomString(length) {
-//     let text = ''
-//     let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-//     for (let i = 0; i < length; i++) {
-//         text += possible.charAt(Math.floor(Math.random() * possible.length))
-//     }
-//     return text
-// }
+let stateKey = 'spotify_auth_state'
+/**
+ * Obtains parameters from the hash of the URL
+ * @return Object
+ */
+function getHashParams() {
+    let hashParams = {}
+    let e, r = /([^&;=]+)=?([^&;]*)/g,
+        q = window.location.hash.substring(1)
+    while (e = r.exec(q)) {
+        hashParams[e[1]] = decodeURIComponent(e[2])
+    }
+    return hashParams
+}
+/**
+ * Generates a random string containing numbers and letters
+ * @param  {number} length The length of the string
+ * @return {string} The generated string
+ */
+function generateRandomString(length) {
+    let text = ''
+    let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    for (let i = 0; i < length; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length))
+    }
+    return text
+}
 
-// let userProfilePlaceholder = document.getElementById('show_access_token')
+let userProfilePlaceholder = document.getElementById('show_access_token')
 
-// let params = getHashParams()
-// let access_token = params.access_token,
-//     state = params.state,
-//     storedState = localStorage.getItem(stateKey)
+let params = getHashParams()
+let access_token = params.access_token,
+    state = params.state,
+    storedState = localStorage.getItem(stateKey)
 
-// if (access_token && (state == null || state !== storedState)) {
-//     alert('There was an error during authentication, or you need to log in again!')
-// } else {
-//     localStorage.removeItem(stateKey)
-//     if (access_token) {
-//         $.ajax({
-//             url: 'https://api.spotify.com/v1/me',
-//             headers: {
-//                 'Authorization': 'Bearer ' + access_token
-//             },
-//             success: function (response) {
+if (access_token && (state == null || state !== storedState)) {
+    alert('There was an error during authentication, or you need to log in again!')
+} else {
+    localStorage.removeItem(stateKey)
+    if (access_token) {
+        $.ajax({
+            url: 'https://api.spotify.com/v1/me',
+            headers: {
+                'Authorization': 'Bearer ' + access_token
+            },
+            success: function (response) {
                 //  COMMENT OUT THIS
                 let spotifyApi = new SpotifyWebApi()
-                spotifyApi.setAccessToken('BQBGZ7mzpGgW8zGYgbTna9zzmJiUJruC83KpgC1dU61e3l5ZrSisA8ciB2oK3p461sc5KpG83bNPn9KbUYHYstOHCJ-htjtQYO1suDGbYpvLZTUALhi-JPAEtuPsezzmWNTtwKwxrkaVJ5-yB9BpJv5ufcLPrutI')
+                spotifyApi.setAccessToken(access_token)
 
-                // search tracks whose artist's name contains 'Love'
                 spotifyApi.getAlbums(['3tx8gQqWbGwqIGZHqDNrGe', '3OZgEywV4krCZ814pTJWr7', '6EVYTRG1drKdO8OnIQBeEj', '6czdbbMtGbAkZ6ud2OMTcg'], {
                         limit: 50
                     })
@@ -120,6 +119,14 @@
                                     .attr('font-weight', 'bold'))
                                 .attr('class', 'y-axis')
 
+                            svg.append('text')
+                                .attr('transform', 'rotate(-90)')
+                                .attr('y', -5)
+                                .attr('x', -30)
+                                .attr('dy', '1em')
+                                .style('text-anchor', 'middle')
+                                .text('Year')
+
                             svg.append('g')
                                 .call(yAxis)
 
@@ -159,7 +166,7 @@
                                     .data(albumData)
                                     .attr('class', 'bubbleGroup ' + songInfo[0].album)
 
-                                let bubbles = bubbleGroups.selectAll('.bubble')
+                                bubbleGroups.selectAll('.bubble')
                                     .data(songInfo)
                                     .enter().append('circle')
                                     .attr('fill', colorScale(index))
@@ -232,7 +239,7 @@
                                     .text(d => d)
                             }
 
-                            d3.select("#y-menu").call(dropdownMenu, {
+                            d3.select('#y-menu').call(dropdownMenu, {
                                 options: columns,
                                 onOptionClicked: onYColumnClicked,
                                 selectedOption: yColumn
@@ -245,7 +252,7 @@
                             let outerRadius = 100,
                                 radialLineGenerator = d3.radialLine().curve(d3.curveCardinalClosed),
                                 radialColorScale = d3.scaleSequential(d3.interpolateWarm).domain([0, info.length]),
-                                gridDimensions = { "rows": 2, "columns": 2 },
+                                gridDimensions = { 'rows': 2, 'columns': 2 },
                                 circleRadii = [outerRadius, outerRadius / 2, outerRadius / 4],
                                 trackFeatures = ['acousticness', 'danceability', 'energy', 'valence']
                             
@@ -259,21 +266,21 @@
                             
                             circleRadii.forEach(c => {
                                 radialSVGOne.append('circle').attr('r', c)
-                                    .attr('transform', "translate(" + radialWidth / 2 + "," + radialHeightOne / 2 + ")")
+                                    .attr('transform', 'translate(' + radialWidth / 2 + ',' + radialHeightOne / 2 + ')')
                                     .attr('fill', 'none')
                                     .attr('stroke', 'gray')
                                 
                                 // scale labels
                                 radialSVGOne.append('text')
                                     .text(c/outerRadius)
-                                    .attr('transform', "translate(" + radialWidth / 2 + "," + (radialHeightOne / 2 - (c + 5)) + ")") // + " rotate(-30, 0," + ((outerRadius + 40) * (c / outerRadius)) + ")"
+                                    .attr('transform', 'translate(' + radialWidth / 2 + ',' + (radialHeightOne / 2 - (c + 5)) + ')') // + ' rotate(-30, 0,' + ((outerRadius + 40) * (c / outerRadius)) + ')'
                                     .attr('text-anchor', 'middle')
                                     .attr('class', 'radial-axis radial-scale-text')
                             })
                             
                             let axialAxis = radialSVGOne.append('g')
                                 .attr('class', 'radial-axis')
-                                .attr('transform', "translate(" + radialWidth / 2 + "," + radialHeightOne / 2 + ")")
+                                .attr('transform', 'translate(' + radialWidth / 2 + ',' + radialHeightOne / 2 + ')')
                                 .selectAll('g')
                                 .data(radialScale.ticks(trackFeatures.length))
                                 .enter().append('g')
@@ -302,7 +309,7 @@
                                 })
                             
                             let radialGroupOne = radialSVGOne.append('g')
-                                .attr('transform', "translate(" + radialWidth / 2 + "," + radialHeightOne / 2 + ")")
+                                .attr('transform', 'translate(' + radialWidth / 2 + ',' + radialHeightOne / 2 + ')')
 
                             let points = [
                                 [radialScale(0), info[0][0][trackFeatures[0]] * outerRadius],
@@ -337,11 +344,11 @@
                                 }
 
                                 let radialGroup = radialSVG.append('g')
-                                    .attr('transform', "translate(" + currentCenter.x + "," + currentCenter.y + ")")
+                                    .attr('transform', 'translate(' + currentCenter.x + ',' + currentCenter.y + ')')
 
                                 circleRadii.forEach(c => {
                                     radialSVG.append('circle').attr('r', c)
-                                        .attr('transform', "translate(" + currentCenter.x + "," + currentCenter.y + ")")
+                                        .attr('transform', 'translate(' + currentCenter.x + ',' + currentCenter.y + ')')
                                         .attr('fill', 'none')
                                         .attr('stroke', 'gray')
                                 })                    
@@ -352,10 +359,9 @@
                                   .attr('text-anchor', 'middle')
                                   .attr('dy', -outerRadius - 25)
 
-                                // keep for checking labels
                                 // let axialAxis = radialSVG.append('g')
                                 //     .attr('class', 'radial-axis')
-                                //     .attr("transform", "translate(" + currentCenter.x + "," + currentCenter.y + ")")
+                                //     .attr('transform', 'translate(' + currentCenter.x + ',' + currentCenter.y + ')')
                                 //     .selectAll('g')
                                 //     .data(radialScale.ticks(trackFeatures.length))
                                 //     .enter().append('g')
@@ -423,29 +429,29 @@
                 $('#login').hide()
                 $('#loggedin').show()
     //  COMMENT OUT THIS
-//             }
-//         })
-//     } else {
-//         $('#login').show()
-//         $('#loggedin').hide()
-//     }
+            }
+        })
+    } else {
+        $('#login').show()
+        $('#loggedin').hide()
+    }
 
-//     d3.select('#login-button')
-//         .on('click', function (d) {
-//             let client_id = '59b8b201c88f468fa70b18adb98097e8' // Your client id
-//             let redirect_uri = 'https://mandicai.github.io/ariana-grande/' // Your redirect uri
-//             let state = generateRandomString(16)
-//             localStorage.setItem(stateKey, state)
-//             let scope = 'user-read-private user-read-email'
-//             let url = 'https://accounts.spotify.com/authorize'
-//             url += '?response_type=token'
-//             url += '&client_id=' + encodeURIComponent(client_id)
-//             url += '&scope=' + encodeURIComponent(scope)
-//             url += '&redirect_uri=' + encodeURIComponent(redirect_uri)
-//             url += '&state=' + encodeURIComponent(state)
-//             window.location = url
-//         })
-// }
+    d3.select('#login-button')
+        .on('click', function (d) {
+            let client_id = '59b8b201c88f468fa70b18adb98097e8' // Your client id
+            let redirect_uri = 'https://mandicai.github.io/ariana-grande/' // Your redirect uri
+            let state = generateRandomString(16)
+            localStorage.setItem(stateKey, state)
+            let scope = 'user-read-private user-read-email'
+            let url = 'https://accounts.spotify.com/authorize'
+            url += '?response_type=token'
+            url += '&client_id=' + encodeURIComponent(client_id)
+            url += '&scope=' + encodeURIComponent(scope)
+            url += '&redirect_uri=' + encodeURIComponent(redirect_uri)
+            url += '&state=' + encodeURIComponent(state)
+            window.location = url
+        })
+}
 //  COMMENT OUT THIS
 
 function flatten(array) {
