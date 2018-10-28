@@ -175,9 +175,37 @@ if (access_token && (state == null || state !== storedState)) {
                                         d3.select('#tooltip').style('display', 'initial')
                                         d3.select('#tooltip').html('<div class="song-name">' + d.name + '</div>')
                                             .style('left', (d3.event.pageX + 10) + 'px').style('top', (d3.event.pageY) + 'px')
+                                        
+                                        let line = d3.line()
+                                        .x(function (d, i) {
+                                            return x(d.x)
+                                        })
+                                        .y(function (d) {
+                                            return y(d.y)
+                                        })
+
+                                        svg.selectAll('.infoLine')
+                                            .data([d])
+                                            .enter().append('line')
+                                            .attr('class', 'infoLine')
+                                            .attr('d', line)
+                                            .attr('x1', function (d) {
+                                                return x(d[yColumn])
+                                            })
+                                            .attr('x2', function (d) {
+                                                return x(d[yColumn])
+                                            })
+                                            .attr('y1', height - margin.bottom)
+                                            .attr('y2', function (d) {
+                                                return y(d.releaseDate) + 5
+                                            })
+                                            .attr('stroke', '#ccc')
+                                            .attr('stroke-width', '0.5px')
                                     })
                                     .on('mouseout', function (d) {
                                         d3.select('#tooltip').style('display', 'none')
+
+                                        svg.selectAll('.infoLine').remove()
                                     })
                             })
 
@@ -439,7 +467,7 @@ if (access_token && (state == null || state !== storedState)) {
     d3.select('#login-button')
         .on('click', function (d) {
             let client_id = '59b8b201c88f468fa70b18adb98097e8' // Your client id
-            let redirect_uri = 'https://mandicai.github.io/ariana-grande/' // Your redirect uri
+            let redirect_uri = 'http://localhost:8000/' // Your redirect uri
             let state = generateRandomString(16)
             localStorage.setItem(stateKey, state)
             let scope = 'user-read-private user-read-email'
