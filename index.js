@@ -1,53 +1,53 @@
 //  COMMENT OUT THIS
-let stateKey = 'spotify_auth_state'
-/**
- * Obtains parameters from the hash of the URL
- * @return Object
- */
-function getHashParams() {
-    let hashParams = {}
-    let e, r = /([^&;=]+)=?([^&;]*)/g,
-        q = window.location.hash.substring(1)
-    while (e = r.exec(q)) {
-        hashParams[e[1]] = decodeURIComponent(e[2])
-    }
-    return hashParams
-}
-/**
- * Generates a random string containing numbers and letters
- * @param  {number} length The length of the string
- * @return {string} The generated string
- */
-function generateRandomString(length) {
-    let text = ''
-    let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-    for (let i = 0; i < length; i++) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length))
-    }
-    return text
-}
+// let stateKey = 'spotify_auth_state'
+// /**
+//  * Obtains parameters from the hash of the URL
+//  * @return Object
+//  */
+// function getHashParams() {
+//     let hashParams = {}
+//     let e, r = /([^&;=]+)=?([^&;]*)/g,
+//         q = window.location.hash.substring(1)
+//     while (e = r.exec(q)) {
+//         hashParams[e[1]] = decodeURIComponent(e[2])
+//     }
+//     return hashParams
+// }
+// /**
+//  * Generates a random string containing numbers and letters
+//  * @param  {number} length The length of the string
+//  * @return {string} The generated string
+//  */
+// function generateRandomString(length) {
+//     let text = ''
+//     let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+//     for (let i = 0; i < length; i++) {
+//         text += possible.charAt(Math.floor(Math.random() * possible.length))
+//     }
+//     return text
+// }
 
-let userProfilePlaceholder = document.getElementById('show_access_token')
+// let userProfilePlaceholder = document.getElementById('show_access_token')
 
-let params = getHashParams()
-let access_token = params.access_token,
-    state = params.state,
-    storedState = localStorage.getItem(stateKey)
+// let params = getHashParams()
+// let access_token = params.access_token,
+//     state = params.state,
+//     storedState = localStorage.getItem(stateKey)
 
-if (access_token && (state == null || state !== storedState)) {
-    alert('There was an error during authentication, or you need to log in again!')
-} else {
-    localStorage.removeItem(stateKey)
-    if (access_token) {
-        $.ajax({
-            url: 'https://api.spotify.com/v1/me',
-            headers: {
-                'Authorization': 'Bearer ' + access_token
-            },
-            success: function (response) {
+// if (access_token && (state == null || state !== storedState)) {
+//     alert('There was an error during authentication, or you need to log in again!')
+// } else {
+//     localStorage.removeItem(stateKey)
+//     if (access_token) {
+//         $.ajax({
+//             url: 'https://api.spotify.com/v1/me',
+//             headers: {
+//                 'Authorization': 'Bearer ' + access_token
+//             },
+//             success: function (response) {
                 //  COMMENT OUT THIS
                 let spotifyApi = new SpotifyWebApi()
-                spotifyApi.setAccessToken(access_token)
+                spotifyApi.setAccessToken('BQBGZ7mzpGgW8zGYgbTna9zzmJiUJruC83KpgC1dU61e3l5ZrSisA8ciB2oK3p461sc5KpG83bNPn9KbUYHYstOHCJ-htjtQYO1suDGbYpvLZTUALhi-JPAEtuPsezzmWNTtwKwxrkaVJ5-yB9BpJv5ufcLPrutI')
 
                 // search tracks whose artist's name contains 'Love'
                 spotifyApi.getAlbums(['3tx8gQqWbGwqIGZHqDNrGe', '3OZgEywV4krCZ814pTJWr7', '6EVYTRG1drKdO8OnIQBeEj', '6czdbbMtGbAkZ6ud2OMTcg'], {
@@ -152,8 +152,7 @@ if (access_token && (state == null || state !== storedState)) {
                             info.forEach((songInfo, index) => {
                                 let albumData = [{
                                     album: songInfo[0].album,
-                                    releaseDate: songInfo[0].releaseDate,
-                                    range: d3.extent(songInfo, function(d) { return d[yColumn] })[1] - d3.extent(songInfo, function(d) { return d[yColumn] })[0]
+                                    releaseDate: songInfo[0].releaseDate
                                 }]
 
                                 let bubbleGroups = g.append('g')
@@ -185,17 +184,6 @@ if (access_token && (state == null || state !== storedState)) {
                                     return y(d.releaseDate)
                                 })
                                 .attr('class', 'album-text')
-
-                            d3.selectAll('.bubbleGroup')
-                                .append('text')
-                                .text(d => {
-                                    return 'Range: ' + d.range
-                                })
-                                .attr('dx', width - margin.right)
-                                .attr('dy', d => {
-                                    return y(d.releaseDate) + 10
-                                })
-                                .attr('class', 'range-text')
 
                             let render = () => {
                                 // RESET THE DOMAIN OF THE X AXIS AND RECALL
@@ -325,17 +313,15 @@ if (access_token && (state == null || state !== storedState)) {
 
                             let radialLineOne = radialLineGenerator(points)
 
-                            setTimeout(function () {
-                                radialGroupOne
-                                    .append('path')
-                                    .attr('d', radialLineOne)
-                                    .attr('stroke', radialColorScale(0))
-                                    .attr('stroke-width', '2px')
-                                    .attr('fill', 'none')
-                                    .attr('opacity', 0.0)
-                                    .transition().duration(500)
-                                    .attr('opacity', 0.5)
-                            }, 1000)
+                            radialGroupOne
+                                .append('path')
+                                .attr('d', radialLineOne)
+                                .attr('stroke', radialColorScale(0))
+                                .attr('stroke-width', '2px')
+                                .attr('fill', 'none')
+                                .attr('opacity', 0.0)
+                                .transition().duration(500)
+                                .attr('opacity', 0.5)
 
                             // RADIAL CHARTS OF ALL ALBUMS
                             let radialSVG = d3.select('#song-radial-chart').append('svg')
@@ -382,49 +368,54 @@ if (access_token && (state == null || state !== storedState)) {
                                 // axialAxis.append('text')
                                 //     .text((d,i) => trackFeatures[i])
                                 //     .attr('dx', outerRadius)
+                                
+                                $(window).on('scroll', function () {
+                                    if ($(this).scrollTop() >= $('#song-radial-chart').position().top - 300) {
+                                        songInfo.forEach((song, i) => {
+                                             let points = [
+                                                 [radialScale(0), song[trackFeatures[0]] * outerRadius],
+                                                 [radialScale(1), song[trackFeatures[1]] * outerRadius],
+                                                 [radialScale(2), song[trackFeatures[2]] * outerRadius],
+                                                 [radialScale(3), song[trackFeatures[3]] * outerRadius],
+                                             ]
 
-                                songInfo.forEach((song, i) => {
-                                    let points = [
-                                        [radialScale(0), song[trackFeatures[0]] * outerRadius],
-                                        [radialScale(1), song[trackFeatures[1]] * outerRadius],
-                                        [radialScale(2), song[trackFeatures[2]] * outerRadius],
-                                        [radialScale(3), song[trackFeatures[3]] * outerRadius],
-                                    ]
+                                             let radialLine = radialLineGenerator(points)
 
-                                    let radialLine = radialLineGenerator(points)
+                                             setTimeout(function () {
+                                                 radialGroup
+                                                     .data([song])
+                                                     .append('path')
+                                                     .attr('d', radialLine)
+                                                     .on('mousemove', function (d) {
+                                                         d3.select('#tooltip').style('display', 'initial')
+                                                         d3.select('#tooltip').html('<div class="song-name">' + d.name + '</div>')
+                                                             .style('left', (d3.event.pageX + 10) + 'px').style('top', (d3.event.pageY) + 'px')
 
-                                    setTimeout(function () {
-                                        radialGroup
-                                            .data([song])
-                                            .append('path')
-                                            .attr('d', radialLine)
-                                            .on('mousemove', function (d) {
-                                                d3.select('#tooltip').style('display', 'initial')
-                                                d3.select('#tooltip').html('<div class="song-name">' + d.name + '</div>')
-                                                    .style('left', (d3.event.pageX + 10) + 'px').style('top', (d3.event.pageY) + 'px')
+                                                         let ringUnderMouse = this
 
-                                                let ringUnderMouse = this
+                                                         d3.selectAll('.radial-circle.' + d.album.replace(/[\(\)\-\s]+/g, '')).transition().style('opacity', function () {
+                                                             return (this === ringUnderMouse) ? 1.0 : 0.1
+                                                         })
+                                                     })
+                                                     .on('mouseout', function (d) {
+                                                         d3.selectAll('.radial-circle.' + d.album.replace(/[\(\)\-\s]+/g, '')).transition().style('opacity', 0.5)
 
-                                                d3.selectAll('.radial-circle.' + d.album.replace(/[\(\)\-\s]+/g, '')).transition().style('opacity', function () {
-                                                    return (this === ringUnderMouse) ? 1.0 : 0.1
-                                                })
-                                            })
-                                            .on('mouseout', function (d) {
-                                                d3.selectAll('.radial-circle.' + d.album.replace(/[\(\)\-\s]+/g, '')).transition().style('opacity', 0.5)
+                                                         d3.select('#tooltip').style('display', 'none')
+                                                     })
+                                                     .attr('stroke', radialColorScale(index))
+                                                     .attr('stroke-width', '2px')
+                                                     .attr('fill', 'none')
+                                                     .attr('class', d => {
+                                                         return 'radial-circle ' + d.album.replace(/[\(\)\-\s]+/g, '')
+                                                     })
+                                                     .style('opacity', 0.0)
+                                                     .transition()
+                                                     .style('opacity', 0.5)
+                                             }, 1000 * i)
+                                         })
 
-                                                d3.select('#tooltip').style('display', 'none')
-                                            })
-                                            .attr('stroke', radialColorScale(index))
-                                            .attr('stroke-width', '2px')
-                                            .attr('fill', 'none')
-                                            .attr('class', d => {
-                                                return 'radial-circle ' + d.album.replace(/[\(\)\-\s]+/g, '')
-                                            })
-                                            .style('opacity', 0.0)
-                                            .transition()
-                                            .style('opacity', 0.5)
-                                    },
-                                    1000 * i)
+                                        $(window).off('scroll')
+                                    }
                                 })
                             })
                         })
@@ -432,29 +423,29 @@ if (access_token && (state == null || state !== storedState)) {
                 $('#login').hide()
                 $('#loggedin').show()
     //  COMMENT OUT THIS
-            }
-        })
-    } else {
-        $('#login').show()
-        $('#loggedin').hide()
-    }
+//             }
+//         })
+//     } else {
+//         $('#login').show()
+//         $('#loggedin').hide()
+//     }
 
-    d3.select('#login-button')
-        .on('click', function (d) {
-            let client_id = '59b8b201c88f468fa70b18adb98097e8' // Your client id
-            let redirect_uri = 'https://mandicai.github.io/ariana-grande/' // Your redirect uri
-            let state = generateRandomString(16)
-            localStorage.setItem(stateKey, state)
-            let scope = 'user-read-private user-read-email'
-            let url = 'https://accounts.spotify.com/authorize'
-            url += '?response_type=token'
-            url += '&client_id=' + encodeURIComponent(client_id)
-            url += '&scope=' + encodeURIComponent(scope)
-            url += '&redirect_uri=' + encodeURIComponent(redirect_uri)
-            url += '&state=' + encodeURIComponent(state)
-            window.location = url
-        })
-}
+//     d3.select('#login-button')
+//         .on('click', function (d) {
+//             let client_id = '59b8b201c88f468fa70b18adb98097e8' // Your client id
+//             let redirect_uri = 'https://mandicai.github.io/ariana-grande/' // Your redirect uri
+//             let state = generateRandomString(16)
+//             localStorage.setItem(stateKey, state)
+//             let scope = 'user-read-private user-read-email'
+//             let url = 'https://accounts.spotify.com/authorize'
+//             url += '?response_type=token'
+//             url += '&client_id=' + encodeURIComponent(client_id)
+//             url += '&scope=' + encodeURIComponent(scope)
+//             url += '&redirect_uri=' + encodeURIComponent(redirect_uri)
+//             url += '&state=' + encodeURIComponent(state)
+//             window.location = url
+//         })
+// }
 //  COMMENT OUT THIS
 
 function flatten(array) {
