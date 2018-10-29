@@ -36,7 +36,16 @@ body {
   opacity: 0.9;
 }
 
-img {
+.sweetener {
+  position: fixed;
+  z-index: -1;
+  opacity: 0.1;
+  left: 5%;
+  bottom: 0px;
+  width: 400px;
+}
+
+.ariana-grande {
   position: fixed;
   z-index: -1;
   opacity: 0.1;
