@@ -67,11 +67,13 @@ p {
 ul {
     list-style-position: inside;
     padding: 2%;
-    border: 2px solid #ffa7e5;
     font-size: 13px;
+    border: 2px solid;
+    border-image: linear-gradient(to right, #324276, #6746a4, #b84ba7, #ed6176, #f0964b) 27 / 3px;
 }
 
 .title {
+  font-size: 45px;
   border-bottom: 2px solid #cccfff;
 }
 

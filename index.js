@@ -402,7 +402,6 @@ if (access_token && (state == null || state !== storedState)) {
                                 // axialAxis.append('text')
                                 //     .text((d,i) => trackFeatures[i])
                                 //     .attr('dx', outerRadius)
-                                
                                 $(window).on('scroll', function () {
                                     if ($(this).scrollTop() >= $('#song-radial-chart').position().top - 300) {
                                         songInfo.forEach((song, i) => {
