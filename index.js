@@ -1,3 +1,15 @@
+let width = 500,
+    height = 300,
+    margin = {
+        top: 20,
+        right: 100,
+        bottom: 50,
+        left: 50
+    }
+
+let svg = d3.select('#song-scatter-chart').append('svg')
+    .attr('viewBox', '0 0' + ' ' + width + ' ' + height)
+
 //  COMMENT OUT THIS
 let stateKey = 'spotify_auth_state'
 /**
@@ -46,6 +58,7 @@ if (access_token && (state == null || state !== storedState)) {
             },
             success: function (response) {
                 //  COMMENT OUT THIS
+
                 let spotifyApi = new SpotifyWebApi()
                 spotifyApi.setAccessToken(access_token)
 
@@ -94,17 +107,6 @@ if (access_token && (state == null || state !== storedState)) {
                     })
                     .then(trackInfo => {
                         Promise.all(trackInfo).then(info => {
-                            let width = 500,
-                                height = 300,
-                                margin = {
-                                    top: 20,
-                                    right: 100,
-                                    bottom: 50,
-                                    left: 50
-                                }
-
-                            let svg = d3.select('#song-scatter-chart').append('svg')
-                                .attr('viewBox', '0 0' + ' ' + width + ' ' + height)
 
                             let y = d3.scaleTime()
                                 .domain(d3.extent(flatten(info), d => d.releaseDate)).nice()
@@ -155,7 +157,7 @@ if (access_token && (state == null || state !== storedState)) {
                             let yColumn = columns[0]
 
                             d3.select('#property').text(yColumn)
-                            
+
                             info.forEach((songInfo, index) => {
                                 let albumData = [{
                                     album: songInfo[0].album,
@@ -175,7 +177,7 @@ if (access_token && (state == null || state !== storedState)) {
                                         d3.select('#tooltip').style('display', 'initial')
                                         d3.select('#tooltip').html('<div class="song-name">' + d.name + '</div>')
                                             .style('left', (d3.event.pageX + 10) + 'px').style('top', (d3.event.pageY) + 'px')
-                                        
+
                                         let line = d3.line()
                                         .x(function (d, i) {
                                             return x(d.x)
@@ -283,29 +285,48 @@ if (access_token && (state == null || state !== storedState)) {
                                 gridDimensions = { 'rows': 2, 'columns': 2 },
                                 circleRadii = [outerRadius, outerRadius / 2, outerRadius / 4],
                                 trackFeatures = ['acousticness', 'danceability', 'energy', 'valence']
-                            
+
                             let radialScale = d3.scaleLinear()
                                 .domain([0, trackFeatures.length])
                                 .range([0, 2 * Math.PI])
-                            
+
+                            function transition(path) {
+                                path.transition()
+                                    .duration(2000)
+                                    .attrTween('stroke-dasharray', tweenDash)
+                            }
+
+                            function tweenDash() {
+                                let l = this.getTotalLength()
+                                let i = d3.interpolateString('0,' + l, l + ',' + l)
+                                return function (t) {
+                                    return i(t)
+                                }
+                            }
+
                             // DIAGRAM OF RADIAL CHART
                             let radialSVGOne = d3.select('#song-radial-chart-one').append('svg')
                                 .attr('viewBox', '0 0' + ' ' + radialWidth + ' ' + radialHeightOne)
-                            
+
                             circleRadii.forEach(c => {
-                                radialSVGOne.append('circle').attr('r', c)
+                                radialSVGOne.append('circle')
+                                    .attr('r', c)
+                                    .call(transition)
                                     .attr('transform', 'translate(' + radialWidth / 2 + ',' + radialHeightOne / 2 + ')')
                                     .attr('fill', 'none')
                                     .attr('stroke', 'gray')
-                                
+                                    .attr('class', 'radial-chart-one')
+                                    .style('opacity', 0)
+
                                 // scale labels
                                 radialSVGOne.append('text')
                                     .text(c/outerRadius)
                                     .attr('transform', 'translate(' + radialWidth / 2 + ',' + (radialHeightOne / 2 - (c + 5)) + ')') // + ' rotate(-30, 0,' + ((outerRadius + 40) * (c / outerRadius)) + ')'
                                     .attr('text-anchor', 'middle')
                                     .attr('class', 'radial-axis radial-scale-text')
+                                    .style('opacity', 0)
                             })
-                            
+
                             let axialAxis = radialSVGOne.append('g')
                                 .attr('class', 'radial-axis')
                                 .attr('transform', 'translate(' + radialWidth / 2 + ',' + radialHeightOne / 2 + ')')
@@ -335,7 +356,9 @@ if (access_token && (state == null || state !== storedState)) {
                                         return 35
                                     }
                                 })
-                            
+                                .attr('class', 'radial-axis-labels')
+                                .style('opacity', 0)
+
                             let radialGroupOne = radialSVGOne.append('g')
                                 .attr('transform', 'translate(' + radialWidth / 2 + ',' + radialHeightOne / 2 + ')')
 
@@ -354,9 +377,8 @@ if (access_token && (state == null || state !== storedState)) {
                                 .attr('stroke', radialColorScale(0))
                                 .attr('stroke-width', '2px')
                                 .attr('fill', 'none')
-                                .attr('opacity', 0.0)
-                                .transition().duration(500)
-                                .attr('opacity', 0.5)
+                                .attr('class', 'radial-group-one')
+                                .style('opacity', 0)
 
                             // RADIAL CHARTS OF ALL ALBUMS
                             let radialSVG = d3.select('#song-radial-chart').append('svg')
@@ -379,7 +401,7 @@ if (access_token && (state == null || state !== storedState)) {
                                         .attr('transform', 'translate(' + currentCenter.x + ',' + currentCenter.y + ')')
                                         .attr('fill', 'none')
                                         .attr('stroke', 'gray')
-                                })                    
+                                })
 
                                 radialGroup
                                   .append('text')
@@ -402,54 +424,71 @@ if (access_token && (state == null || state !== storedState)) {
                                 // axialAxis.append('text')
                                 //     .text((d,i) => trackFeatures[i])
                                 //     .attr('dx', outerRadius)
-                                $(window).on('scroll', function () {
-                                    if ($(this).scrollTop() >= $('#song-radial-chart').position().top - 300) {
-                                        songInfo.forEach((song, i) => {
-                                             let points = [
-                                                 [radialScale(0), song[trackFeatures[0]] * outerRadius],
-                                                 [radialScale(1), song[trackFeatures[1]] * outerRadius],
-                                                 [radialScale(2), song[trackFeatures[2]] * outerRadius],
-                                                 [radialScale(3), song[trackFeatures[3]] * outerRadius],
-                                             ]
 
-                                             let radialLine = radialLineGenerator(points)
+                                const scroller = scrollama()
 
-                                             setTimeout(function () {
-                                                 radialGroup
-                                                     .data([song])
-                                                     .append('path')
-                                                     .attr('d', radialLine)
-                                                     .on('mousemove', function (d) {
-                                                         d3.select('#tooltip').style('display', 'initial')
-                                                         d3.select('#tooltip').html('<div class="song-name">' + d.name + '</div>')
-                                                             .style('left', (d3.event.pageX + 10) + 'px').style('top', (d3.event.pageY) + 'px')
+                                scroller
+                                    .setup({
+                                        step: '.step'
+                                    })
+                                    .onStepEnter(drawRadialCharts)
 
-                                                         let ringUnderMouse = this
+                                function drawRadialCharts (response) {
+                                    if (response.index === 0) {
+                                        d3.selectAll('.radial-chart-one')
+                                            .style('opacity', 1)
+                                            .call(transition)
 
-                                                         d3.selectAll('.radial-circle.' + d.album.replace(/[\(\)\-\s]+/g, '')).transition().style('opacity', function () {
-                                                             return (this === ringUnderMouse) ? 1.0 : 0.1
-                                                         })
-                                                     })
-                                                     .on('mouseout', function (d) {
-                                                         d3.selectAll('.radial-circle.' + d.album.replace(/[\(\)\-\s]+/g, '')).transition().style('opacity', 0.5)
-
-                                                         d3.select('#tooltip').style('display', 'none')
-                                                     })
-                                                     .attr('stroke', radialColorScale(index))
-                                                     .attr('stroke-width', '2px')
-                                                     .attr('fill', 'none')
-                                                     .attr('class', d => {
-                                                         return 'radial-circle ' + d.album.replace(/[\(\)\-\s]+/g, '')
-                                                     })
-                                                     .style('opacity', 0.0)
-                                                     .transition()
-                                                     .style('opacity', 0.5)
-                                             }, 1000 * i)
-                                         })
-
-                                        $(window).off('scroll')
+                                        d3.selectAll('.radial-axis,.radial-axis-labels').transition().style('opacity', 1)
+                                        d3.select('.radial-group-one').transition().style('opacity', 0.5)
                                     }
-                                })
+                                    if (response.index === 1) {
+                                        songInfo.forEach((song, i) => {
+                                            let points = [
+                                                [radialScale(0), song[trackFeatures[0]] * outerRadius],
+                                                [radialScale(1), song[trackFeatures[1]] * outerRadius],
+                                                [radialScale(2), song[trackFeatures[2]] * outerRadius],
+                                                [radialScale(3), song[trackFeatures[3]] * outerRadius],
+                                            ]
+
+                                            let radialLine = radialLineGenerator(points)
+
+                                            setTimeout(function () {
+                                                radialGroup
+                                                    .data([song])
+                                                    .append('path')
+                                                    .attr('d', radialLine)
+                                                    .on('mousemove', function (d) {
+                                                        d3.select('#tooltip').style('display', 'initial')
+                                                        d3.select('#tooltip').html('<div class="song-name">' + d.name + '</div>')
+                                                            .style('left', (d3.event.pageX + 10) + 'px').style('top', (d3.event.pageY) + 'px')
+
+                                                        let ringUnderMouse = this
+
+                                                        d3.selectAll('.radial-circle.' + d.album.replace(/[\(\)\-\s]+/g, '')).transition().style('opacity', function () {
+                                                            return (this === ringUnderMouse) ? 1.0 : 0.1
+                                                        })
+                                                    })
+                                                    .on('mouseout', function (d) {
+                                                        d3.selectAll('.radial-circle.' + d.album.replace(/[\(\)\-\s]+/g, '')).transition().style('opacity', 0.5)
+
+                                                        d3.select('#tooltip').style('display', 'none')
+                                                    })
+                                                    .attr('stroke', radialColorScale(index))
+                                                    .attr('stroke-width', '2px')
+                                                    .attr('fill', 'none')
+                                                    .attr('class', d => {
+                                                        return 'radial-circle ' + d.album.replace(/[\(\)\-\s]+/g, '')
+                                                    })
+                                                    .style('opacity', 0)
+                                                    .transition()
+                                                    .style('opacity', 0.5)
+                                            }, 1000 * i)
+
+                                            scroller.disable()
+                                        })
+                                    }
+                                }
                             })
                         })
                     })
@@ -466,6 +505,7 @@ if (access_token && (state == null || state !== storedState)) {
     d3.select('#login-button')
         .on('click', function (d) {
             let client_id = '59b8b201c88f468fa70b18adb98097e8' // Your client id
+            // http://localhost:8000/
             let redirect_uri = 'https://mandicai.github.io/ariana-grande/' // Your redirect uri
             let state = generateRandomString(16)
             localStorage.setItem(stateKey, state)
