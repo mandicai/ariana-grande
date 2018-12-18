@@ -305,8 +305,7 @@ if (access_token && (state == null || state !== storedState)) {
                             }
 
                             // DIAGRAM OF RADIAL CHART
-                            let radialSVGOne = d3.select('#song-radial-chart-one').append('svg')
-                                .attr('viewBox', '0 0' + ' ' + radialWidth + ' ' + radialHeightOne)
+                            let radialSVGOne = d3.select('#song-radial-chart-one').select('svg')
 
                             circleRadii.forEach(c => {
                                 radialSVGOne.append('circle')
