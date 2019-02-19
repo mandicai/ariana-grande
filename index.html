@@ -29,14 +29,14 @@
         <div id="background-image"></div>
         <div id="login">
             <h1>The Evolution of Ariana Grande</h1>
-            <img class="sweetener" src="sweetener.png">
+            <img class="sweetener" src="assets/img/sweetener.png">
             <p>(You need a Spotify account to view the visualization! Read more about Spotify authentication <a href="https://developer.spotify.com/documentation/general/guides/authorization-guide/">here</a>.)</p>
             <button id="login-button" class="btn btn-primary">Log in with Spotify</button>
         </div>
         <div id="loggedin">
             <h1 class="title">The Evolution of Ariana Grande</h1>
             <h4>By Mandi Cai</h4>
-            <img class="ariana-grande" src="ariana-grande.png">
+            <img class="ariana-grande" src="assets/img/ariana-grande.png">
             <p>Since the release of her debut album <i>Yours Truly</i> in 2013, Ariana Grande has sold 30.5 million digital singles. She was named one of <i>TIME</i>'s 100 most influential people in the world in 2016, and has been nominated for 4 Grammy's.
               I wanted to visualize how her albums have evolved over the years, given that she has a four octave soprano vocal range to work with.
             </p>
@@ -52,7 +52,7 @@
             <h3>Her albums over the years ...</h3>
             <p>By mapping each song on a radial chart, we can observe the overall "shape" of the respective album according to each song's acousticness, danceability, energy, and valence. For example, the song below scores high on acousticness, and lower on danceability, energy, and valence.</p>
             <div class="step" id="song-radial-chart-one">
-                <svg viewBox="0 0 1000 325"></svg>
+                <svg viewbox="0 0 1000 325"></svg>
             </div>
             <p>Below are all four of her albums and their respective tracks. Hover over to see individual tracks.</p>
             <div class="step" id="song-radial-chart"></div>
@@ -76,10 +76,10 @@
     <script src="https://unpkg.com/intersection-observer@0.5.0/intersection-observer.js"></script>
     <script src="https://unpkg.com/scrollama"></script>
     <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script src="assets/spotify-web-api-wrapper.js"></script>
+    <script src="assets/js/spotify-web-api-wrapper.js"></script>
     <script src="//unpkg.com/cross-fetch/dist/cross-fetch.js"></script>
-    <script src="assets/d3.v5.min.js"></script>
-    <script src="assets/d3-scale-radial.js"></script>
+    <script src="assets/js/d3.v5.min.js"></script>
+    <script src="assets/js/d3-scale-radial.js"></script>
     <script src="index.js"></script>
 </body>
 
