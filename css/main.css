@@ -63,10 +63,9 @@ p {
     margin-bottom: 2%;
 }
 
-
 ul {
-    list-style-position: inside;
-    padding: 2%;
+    list-style-position: outside;
+    padding: 4%;
     font-size: 13px;
     border: 2px solid;
     border-image: linear-gradient(to right, #324276, #6746a4, #b84ba7, #ed6176, #f0964b) 27 / 3px;
@@ -149,13 +148,21 @@ a {
         font-size: 100px;
     }
 
-    #login {
-        left: 5%;
-        right: 5%;
+    h3, h4 {
+        font-size: 50px;
+    }
+
+    h3 {
+        border-bottom: 5px solid #cccfff;
     }
 
     p {
         font-size: 30px;
+    }
+
+    #login {
+        left: 5%;
+        right: 5%;
     }
 
     #login-button {
@@ -167,5 +174,24 @@ a {
 
     .sweetener {
         width: 600px;
+    }
+
+    .header {
+        margin: 10% 0 10% 0;
+    }
+
+    .title {
+        font-size: 85px;
+        margin: 5% 0 5% 0;
+        border-bottom: 5px solid #cccfff;
+    }
+
+    ul {
+        margin: 5% 0 5% 0;
+        padding: 10%;
+    }
+
+    li {
+        font-size: 30px;
     }
 }
