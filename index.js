@@ -527,4 +527,3 @@ function flatten(array) {
 function rad2deg(angle) {
     return angle * 180 / Math.PI
 }
-
